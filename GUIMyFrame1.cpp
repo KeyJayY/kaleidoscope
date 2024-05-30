@@ -7,6 +7,7 @@ GUIMyFrame1::GUIMyFrame1(wxWindow* parent) : MyFrame1(parent) {
     Bind(wxEVT_COMMAND_BUTTON_CLICKED, &GUIMyFrame1::UpdateProgressBar, this,
          ID_UPDATE_PROGRESS);
     resizeTimer.Bind(wxEVT_TIMER, &GUIMyFrame1::onResizeTimer, this);
+    this->SetDoubleBuffered(true);
 }
 
 void GUIMyFrame1::changeSize(wxSizeEvent& event) {
@@ -16,8 +17,8 @@ void GUIMyFrame1::changeSize(wxSizeEvent& event) {
 }
 
 void GUIMyFrame1::drawOnPaint(wxPaintEvent& event) {
-    if (imgResult.IsOk()) {
-        wxClientDC dc(m_panel1);
+    if (imgCopy.IsOk()) {
+        wxPaintDC dc(m_panel1);
         if (drawAxisBool) drawAxis();
         wxBitmap bitmap(imgResult);
         dc.DrawBitmap(bitmap, 0, 0, true);
