@@ -1,5 +1,7 @@
 #include "GUIMyFrame1.h"
 
+#include "SeriesWorkerThread.h"
+
 GUIMyFrame1::GUIMyFrame1(wxWindow* parent) : MyFrame1(parent) {
     wxInitAllImageHandlers();
     Bind(wxEVT_COMMAND_BUTTON_CLICKED, &GUIMyFrame1::OnThreadCompletion, this,
@@ -13,6 +15,10 @@ void GUIMyFrame1::changeSize(wxSizeEvent& event) {
     toResize = true;
     resizeTimer.Start(100, wxTIMER_ONE_SHOT);
     event.Skip();
+}
+
+void GUIMyFrame1::drawOnPaint(wxPaintEvent& event) {
+    // TODO: Implement drawOnPaint
 }
 
 void GUIMyFrame1::scrollChangeAxisNumber(wxScrollEvent& event) {
@@ -87,8 +93,8 @@ void GUIMyFrame1::clickSaveSeries(wxCommandEvent& event) {
 
         wxString directoryPath = dirDialog.GetPath();
 
-        WorkerThread* thread =
-            new WorkerThread(this, directoryPath, window.config);
+        SeriesWorkerThread* thread =
+            new SeriesWorkerThread(this, directoryPath, window.config);
         if (thread->Run() != wxTHREAD_NO_ERROR) {
             delete thread;
             wxMessageBox("Nie można uruchomić wątku!", "Błąd", wxICON_ERROR);

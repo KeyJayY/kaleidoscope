@@ -120,6 +120,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style">wxTAB_TRAVERSAL</property>
+            <event name="OnPaint">drawOnPaint</event>
           </object>
         </object>
         <object class="sizeritem" expanded="true">
@@ -173,7 +174,7 @@
                     <property name="gripper">0</property>
                     <property name="hidden">0</property>
                     <property name="id">wxID_ANY</property>
-                    <property name="label">Liczba osi</property>
+                    <property name="label">liczba osi</property>
                     <property name="markup">0</property>
                     <property name="max_size"></property>
                     <property name="maximize_button">0</property>
@@ -779,7 +780,7 @@
                     <property name="gripper">0</property>
                     <property name="hidden">0</property>
                     <property name="id">wxID_ANY</property>
-                    <property name="label">Przesuń w pionie</property>
+                    <property name="label">przesuń w pionie</property>
                     <property name="markup">0</property>
                     <property name="max_size"></property>
                     <property name="maximize_button">0</property>
@@ -966,7 +967,7 @@
                     <property name="caption"></property>
                     <property name="caption_visible">1</property>
                     <property name="center_pane">0</property>
-                    <property name="checked">0</property>
+                    <property name="checked">1</property>
                     <property name="close_button">1</property>
                     <property name="context_help"></property>
                     <property name="context_menu">1</property>
@@ -982,7 +983,7 @@
                     <property name="gripper">0</property>
                     <property name="hidden">0</property>
                     <property name="id">wxID_ANY</property>
-                    <property name="label">Rysowanie przy każdej zmianie</property>
+                    <property name="label">rysowanie przy każdej zmianie</property>
                     <property name="max_size"></property>
                     <property name="maximize_button">0</property>
                     <property name="maximum_size"></property>
@@ -1032,7 +1033,7 @@
                     <property name="caption"></property>
                     <property name="caption_visible">1</property>
                     <property name="center_pane">0</property>
-                    <property name="checked">1</property>
+                    <property name="checked">0</property>
                     <property name="close_button">1</property>
                     <property name="context_help"></property>
                     <property name="context_menu">1</property>
@@ -1048,7 +1049,7 @@
                     <property name="gripper">0</property>
                     <property name="hidden">0</property>
                     <property name="id">wxID_ANY</property>
-                    <property name="label">Rysuj osie</property>
+                    <property name="label">rysuj osie</property>
                     <property name="max_size"></property>
                     <property name="maximize_button">0</property>
                     <property name="maximum_size"></property>
@@ -1124,7 +1125,7 @@
                     <property name="gripper">0</property>
                     <property name="hidden">0</property>
                     <property name="id">wxID_ANY</property>
-                    <property name="label">Interpolator</property>
+                    <property name="label">interpolator</property>
                     <property name="markup">0</property>
                     <property name="max_size"></property>
                     <property name="maximize_button">0</property>
@@ -1723,7 +1724,7 @@
                 <property name="gripper">0</property>
                 <property name="hidden">0</property>
                 <property name="id">wxID_ANY</property>
-                <property name="label">początkowy kąt (deg)</property>
+                <property name="label">początkowy kąt (°)</property>
                 <property name="markup">0</property>
                 <property name="max_size"></property>
                 <property name="maximize_button">0</property>
@@ -1850,7 +1851,7 @@
                 <property name="gripper">0</property>
                 <property name="hidden">0</property>
                 <property name="id">wxID_ANY</property>
-                <property name="label">końcowy kąt (deg)</property>
+                <property name="label">końcowy kąt (°)</property>
                 <property name="markup">0</property>
                 <property name="max_size"></property>
                 <property name="maximize_button">0</property>

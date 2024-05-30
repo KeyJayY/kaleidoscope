@@ -31,7 +31,7 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer3 = new wxBoxSizer(wxHORIZONTAL);
 
     m_staticText1 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("Liczba osi"),
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("liczba osi"),
                          wxDefaultPosition, wxDefaultSize, 0);
     m_staticText1->Wrap(-1);
     bSizer3->Add(m_staticText1, 0, wxALIGN_CENTER | wxALL, 5);
@@ -92,7 +92,7 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer8 = new wxBoxSizer(wxHORIZONTAL);
 
     m_staticText9 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("Przesuń w pionie"),
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("przesuń w pionie"),
                          wxDefaultPosition, wxDefaultSize, 0);
     m_staticText9->Wrap(-1);
     bSizer8->Add(m_staticText9, 0, wxALIGN_CENTER | wxALL, 5);
@@ -113,14 +113,14 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer91 = new wxBoxSizer(wxHORIZONTAL);
 
     drawOnChangeCheckBox = new wxCheckBox(
-        this, wxID_ANY, wxString::FromUTF8("Rysowanie przy każdej zmianie"),
+        this, wxID_ANY, wxString::FromUTF8("rysowanie przy każdej zmianie"),
         wxDefaultPosition, wxDefaultSize, 0);
+    drawOnChangeCheckBox->SetValue(true);
     bSizer91->Add(drawOnChangeCheckBox, 0, wxALL | wxEXPAND, 5);
 
     drawAxisCheck =
-        new wxCheckBox(this, wxID_ANY, wxString::FromUTF8("Rysuj osie"),
+        new wxCheckBox(this, wxID_ANY, wxString::FromUTF8("rysuj osie"),
                        wxDefaultPosition, wxDefaultSize, 0);
-    drawAxisCheck->SetValue(true);
     bSizer91->Add(drawAxisCheck, 0, wxALIGN_CENTER | wxALL, 5);
 
     bSizer7->Add(bSizer91, 0, wxALIGN_CENTER, 5);
@@ -129,7 +129,7 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer9 = new wxBoxSizer(wxHORIZONTAL);
 
     m_staticText12 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("Interpolator"),
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("interpolator"),
                          wxDefaultPosition, wxDefaultSize, 0);
     m_staticText12->Wrap(-1);
     bSizer9->Add(m_staticText12, 1, wxALIGN_CENTER | wxALL, 5);
@@ -187,6 +187,8 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
 
     // Connect Events
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(MyFrame1::changeSize));
+    m_panel1->Connect(wxEVT_PAINT, wxPaintEventHandler(MyFrame1::drawOnPaint),
+                      NULL, this);
     axis->Connect(wxEVT_SCROLL_TOP,
                   wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
                   this);
@@ -310,6 +312,8 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
 MyFrame1::~MyFrame1() {
     // Disconnect Events
     this->Disconnect(wxEVT_SIZE, wxSizeEventHandler(MyFrame1::changeSize));
+    m_panel1->Disconnect(
+        wxEVT_PAINT, wxPaintEventHandler(MyFrame1::drawOnPaint), NULL, this);
     axis->Disconnect(wxEVT_SCROLL_TOP,
                      wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
                      NULL, this);
@@ -450,7 +454,7 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer10 = new wxBoxSizer(wxVERTICAL);
 
     m_staticText14 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("obrót (deg):"),
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("obrót:"),
                          wxDefaultPosition, wxDefaultSize, 0);
     m_staticText14->Wrap(-1);
     bSizer10->Add(m_staticText14, 0, wxALL, 5);
@@ -458,9 +462,9 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     wxBoxSizer* bSizer11;
     bSizer11 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText10 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("początkowy kąt"),
-                         wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText10 = new wxStaticText(this, wxID_ANY,
+                                      wxString::FromUTF8("początkowy kąt (°)"),
+                                      wxDefaultPosition, wxDefaultSize, 0);
     m_staticText10->Wrap(-1);
     bSizer11->Add(m_staticText10, 0, wxALIGN_CENTER | wxALL, 5);
 
@@ -469,7 +473,7 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer11->Add(fi1Box, 0, wxALIGN_CENTER | wxALL, 5);
 
     m_staticText11 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowy kąt"),
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowy kąt (°)"),
                          wxDefaultPosition, wxDefaultSize, 0);
     m_staticText11->Wrap(-1);
     bSizer11->Add(m_staticText11, 0, wxALIGN_CENTER | wxALL, 5);
@@ -485,7 +489,7 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer10->Add(m_staticline1, 0, wxEXPAND | wxALL, 5);
 
     m_staticText16 = new wxStaticText(
-        this, wxID_ANY, wxString::FromUTF8("przesunięcie w poziomie (%):"),
+        this, wxID_ANY, wxString::FromUTF8("przesunięcie w poziomie:"),
         wxDefaultPosition, wxDefaultSize, 0);
     m_staticText16->Wrap(-1);
     bSizer10->Add(m_staticText16, 0, wxALL, 5);
@@ -493,9 +497,9 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     wxBoxSizer* bSizer13;
     bSizer13 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText12 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("początkowe dx"),
-                         wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText12 = new wxStaticText(this, wxID_ANY,
+                                      wxString::FromUTF8("początkowe dx (%)"),
+                                      wxDefaultPosition, wxDefaultSize, 0);
     m_staticText12->Wrap(-1);
     bSizer13->Add(m_staticText12, 0, wxALIGN_CENTER | wxALL, 5);
 
@@ -504,7 +508,7 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer13->Add(dx1Box, 0, wxALIGN_CENTER | wxALL, 5);
 
     m_staticText13 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowe dx"),
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowe dx (%)"),
                          wxDefaultPosition, wxDefaultSize, 0);
     m_staticText13->Wrap(-1);
     bSizer13->Add(m_staticText13, 0, wxALIGN_CENTER | wxALL, 5);
@@ -520,7 +524,7 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer10->Add(m_staticline2, 0, wxEXPAND | wxALL, 5);
 
     m_staticText17 = new wxStaticText(
-        this, wxID_ANY, wxString::FromUTF8("przesunięcie w pionie (%):"),
+        this, wxID_ANY, wxString::FromUTF8("przesunięcie w pionie"),
         wxDefaultPosition, wxDefaultSize, 0);
     m_staticText17->Wrap(-1);
     bSizer10->Add(m_staticText17, 0, wxALL, 5);
@@ -528,9 +532,9 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     wxBoxSizer* bSizer14;
     bSizer14 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText18 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("początkowe dy"),
-                         wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText18 = new wxStaticText(this, wxID_ANY,
+                                      wxString::FromUTF8("początkowe dy (%)"),
+                                      wxDefaultPosition, wxDefaultSize, 0);
     m_staticText18->Wrap(-1);
     bSizer14->Add(m_staticText18, 0, wxALIGN_CENTER | wxALL, 5);
 
@@ -539,7 +543,7 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     bSizer14->Add(dy1Box, 0, wxALIGN_CENTER | wxALL, 5);
 
     m_staticText19 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowe dy"),
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowe dy (%)"),
                          wxDefaultPosition, wxDefaultSize, 0);
     m_staticText19->Wrap(-1);
     bSizer14->Add(m_staticText19, 0, wxALIGN_CENTER | wxALL, 5);

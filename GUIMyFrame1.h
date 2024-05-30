@@ -47,6 +47,7 @@ class GUIMyFrame1 : public MyFrame1 {
    protected:
     // Handlers for MyFrame1 events.
     void changeSize(wxSizeEvent& event);
+    void drawOnPaint(wxPaintEvent& event);
     void scrollChangeAxisNumber(wxScrollEvent& event);
     void scrollRotate(wxScrollEvent& event);
     void translateX(wxScrollEvent& event);
@@ -89,27 +90,6 @@ class GUIMyFrame1 : public MyFrame1 {
     const long ID_UPDATE_PROGRESS = wxNewId();
     wxTimer resizeTimer;
     void resizeImages();
-};
-
-class WorkerThread : public wxThread {
-   public:
-    WorkerThread(GUIMyFrame1* parent, const wxString& path, Config c)
-        : wxThread(wxTHREAD_DETACHED),
-          m_parent(parent),
-          m_path(path),
-          config(c) {}
-
-    virtual wxThread::ExitCode Entry() {
-        m_parent->generateSeries(m_path, config);
-        wxQueueEvent(m_parent, new wxCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED,
-                                                  m_parent->id));
-        return (wxThread::ExitCode)0;
-    }
-
-   private:
-    GUIMyFrame1* m_parent;
-    wxString m_path;
-    Config config;
 };
 
 #endif  // __GUIMyFrame1__

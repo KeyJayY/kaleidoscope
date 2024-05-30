@@ -11,15 +11,6 @@ void GUIMyDialog1::generate(wxCommandEvent& event) {
                      wxOK | wxICON_ERROR);
 }
 
-void GUIMyDialog1::generate(wxCommandEvent& event) {
-    if (checkConfig()) {
-        isOk = true;
-        Close();
-    } else
-        wxMessageBox("Niepoprawne dane", "niepoprawne dane",
-                     wxOK | wxICON_ERROR);
-}
-
 bool GUIMyDialog1::checkConfig() {
     if (!(dx1Box->GetValue().ToDouble(&(config.dx1)) &&
           dx2Box->GetValue().ToDouble(&(config.dx2)) &&

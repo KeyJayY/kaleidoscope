@@ -61,6 +61,7 @@ class MyFrame1 : public wxFrame {
 
     // Virtual event handlers, override them in your derived class
     virtual void changeSize(wxSizeEvent& event) { event.Skip(); }
+    virtual void drawOnPaint(wxPaintEvent& event) { event.Skip(); }
     virtual void scrollChangeAxisNumber(wxScrollEvent& event) { event.Skip(); }
     virtual void scrollRotate(wxScrollEvent& event) { event.Skip(); }
     virtual void translateX(wxScrollEvent& event) { event.Skip(); }
