@@ -115,12 +115,12 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
     drawOnChangeCheckBox = new wxCheckBox(
         this, wxID_ANY, wxString::FromUTF8("rysowanie przy każdej zmianie"),
         wxDefaultPosition, wxDefaultSize, 0);
-    drawOnChangeCheckBox->SetValue(true);
     bSizer91->Add(drawOnChangeCheckBox, 0, wxALL | wxEXPAND, 5);
 
     drawAxisCheck =
         new wxCheckBox(this, wxID_ANY, wxString::FromUTF8("rysuj osie"),
                        wxDefaultPosition, wxDefaultSize, 0);
+    drawAxisCheck->SetValue(true);
     bSizer91->Add(drawAxisCheck, 0, wxALIGN_CENTER | wxALL, 5);
 
     bSizer7->Add(bSizer91, 0, wxALIGN_CENTER, 5);

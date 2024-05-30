@@ -13,7 +13,9 @@ class MyApp : public wxApp {
 IMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit() {
+#ifdef _WIN32
     SetProcessDPIAware();
+#endif
     wxFrame* mainFrame = new GUIMyFrame1(NULL);
 
     mainFrame->Show(true);

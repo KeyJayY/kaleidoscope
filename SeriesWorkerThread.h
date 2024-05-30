@@ -1,5 +1,7 @@
-#include "GUIMyFrame1.h"
+#pragma once
+#include <wx/wx.h>
 
+class GUIMyFrame1;
 class SeriesWorkerThread : public wxThread {
    public:
     SeriesWorkerThread(GUIMyFrame1* parent, const wxString& path, Config c)
@@ -8,12 +10,7 @@ class SeriesWorkerThread : public wxThread {
           m_path(path),
           config(c) {}
 
-    virtual wxThread::ExitCode Entry() {
-        m_parent->generateSeries(m_path, config);
-        wxQueueEvent(m_parent, new wxCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED,
-                                                  m_parent->id));
-        return (wxThread::ExitCode)0;
-    }
+    virtual wxThread::ExitCode Entry();
 
    private:
     GUIMyFrame1* m_parent;

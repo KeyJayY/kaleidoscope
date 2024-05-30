@@ -18,7 +18,12 @@ void GUIMyFrame1::changeSize(wxSizeEvent& event) {
 }
 
 void GUIMyFrame1::drawOnPaint(wxPaintEvent& event) {
-    // TODO: Implement drawOnPaint
+    if (imgCopy.IsOk()) {
+        wxClientDC dc(m_panel1);
+        if (drawAxisBool) drawAxis();
+        wxBitmap bitmap(imgCopy);
+        dc.DrawBitmap(bitmap, 0, 0, true);
+    }
 }
 
 void GUIMyFrame1::scrollChangeAxisNumber(wxScrollEvent& event) {
@@ -166,10 +171,7 @@ void GUIMyFrame1::Repaint() {
             drawKaleidoscope();
             imgCopy = RotateImageCubic(imgCopy, -angle);
         }
-        wxClientDC dc(m_panel1);
-        if (drawAxisBool) drawAxis();
-        wxBitmap bitmap(imgCopy);
-        dc.DrawBitmap(bitmap, 0, 0, true);
+        Refresh();
     }
 }
 
