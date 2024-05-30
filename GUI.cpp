@@ -178,6 +178,16 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
 
     bSizer7->Add(bSizer6, 1, wxEXPAND | wxLEFT | wxRIGHT, 5);
 
+    m_staticText20 =
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("statusbar"),
+                         wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText20->Wrap(-1);
+    m_staticText20->SetForegroundColour(
+        wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
+    m_staticText20->Enable(false);
+
+    bSizer7->Add(m_staticText20, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+
     bSizer1->Add(bSizer7, 1, wxALIGN_CENTER_HORIZONTAL | wxEXPAND, 5);
 
     this->SetSizer(bSizer1);

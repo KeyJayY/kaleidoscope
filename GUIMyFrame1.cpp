@@ -1,11 +1,9 @@
 #include "GUIMyFrame1.h"
 
-#include "SeriesWorkerThread.h"
-
 GUIMyFrame1::GUIMyFrame1(wxWindow* parent) : MyFrame1(parent) {
     wxInitAllImageHandlers();
     Bind(wxEVT_COMMAND_BUTTON_CLICKED, &GUIMyFrame1::OnThreadCompletion, this,
-         id);
+         windowId);
     Bind(wxEVT_COMMAND_BUTTON_CLICKED, &GUIMyFrame1::UpdateProgressBar, this,
          ID_UPDATE_PROGRESS);
     resizeTimer.Bind(wxEVT_TIMER, &GUIMyFrame1::onResizeTimer, this);
@@ -18,10 +16,10 @@ void GUIMyFrame1::changeSize(wxSizeEvent& event) {
 }
 
 void GUIMyFrame1::drawOnPaint(wxPaintEvent& event) {
-    if (imgCopy.IsOk()) {
+    if (imgResult.IsOk()) {
         wxClientDC dc(m_panel1);
         if (drawAxisBool) drawAxis();
-        wxBitmap bitmap(imgCopy);
+        wxBitmap bitmap(imgResult);
         dc.DrawBitmap(bitmap, 0, 0, true);
     }
 }
@@ -77,7 +75,7 @@ void GUIMyFrame1::loadImage(wxCommandEvent& event) {
     imgOriginal = image.Copy();
     imgResized = image.Copy();
     img = image.Copy();
-    imgCopy = image.Copy();
+    imgResult = image.Copy();
     resizeImages();
     Repaint();
 }
@@ -134,7 +132,7 @@ void GUIMyFrame1::clickSave(wxCommandEvent& event) {
         fileType = wxBITMAP_TYPE_PNG;
     }
 
-    if (!imgCopy.SaveFile(filePath, fileType)) {
+    if (!imgResult.SaveFile(filePath, fileType)) {
         wxLogError("Nie można zapisać obrazu!");
     }
 }
@@ -155,24 +153,30 @@ void GUIMyFrame1::resetOptions() {
 }
 
 void GUIMyFrame1::Repaint() {
+    auto t0 = std::chrono::high_resolution_clock::now();
     if (toResize) {
         resizeImages();
         translateX(translateXSlider->GetValue());
         translateY(translateYSlider->GetValue());
     }
     if (img.IsOk()) {
-        imgCopy = img.Copy();
+        imgResult = img.Copy();
         if (linear) {
-            imgCopy = RotateImageLinear(imgCopy, angle);
+            imgResult = RotateImageLinear(imgResult, angle);
             drawKaleidoscope();
-            imgCopy = RotateImageLinear(imgCopy, -angle);
+            imgResult = RotateImageLinear(imgResult, -angle);
         } else {
-            imgCopy = RotateImageCubic(imgCopy, angle);
+            imgResult = RotateImageCubic(imgResult, angle);
             drawKaleidoscope();
-            imgCopy = RotateImageCubic(imgCopy, -angle);
+            imgResult = RotateImageCubic(imgResult, -angle);
         }
         Refresh();
     }
+    auto t1 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> ms_double = t1 - t0;
+    m_staticText20->SetLabelText(std::format("{:.3} ms / {:.1f} FPS",
+                                             ms_double.count(),
+                                             1000.0 / ms_double.count()));
 }
 
 void GUIMyFrame1::generateSeries(wxString path, Config config) {
@@ -185,24 +189,24 @@ void GUIMyFrame1::generateSeries(wxString path, Config config) {
     for (int i = 0; i <= 60; i++) {
         translateX(config.dx1 + dx * i);
         translateY(config.dy1 + dy * i);
-        imgCopy = img.Copy();
+        imgResult = img.Copy();
         angle = config.fi1 + dfi * i;
         if (linear) {
-            imgCopy = RotateImageLinear(imgCopy, angle);
+            imgResult = RotateImageLinear(imgResult, angle);
             drawKaleidoscope();
-            imgCopy = RotateImageLinear(imgCopy, -angle);
+            imgResult = RotateImageLinear(imgResult, -angle);
         } else {
-            imgCopy = RotateImageCubic(imgCopy, angle);
+            imgResult = RotateImageCubic(imgResult, angle);
             drawKaleidoscope();
-            imgCopy = RotateImageCubic(imgCopy, -angle);
+            imgResult = RotateImageCubic(imgResult, -angle);
         }
         if (drawAxisBool) drawAxis();
-        imgCopy.SaveFile(path + "\\" + std::to_string(i) +
-                             " fi=" + std::to_string(config.fi1 + dfi * i) +
-                             " dx=" + std::to_string(config.dx1 + dx * i) +
-                             " dy=" + std::to_string(config.dy1 + dy * i) +
-                             ".png",
-                         wxBITMAP_TYPE_PNG);
+        imgResult.SaveFile(path + "\\" + std::to_string(i) +
+                               " fi=" + std::to_string(config.fi1 + dfi * i) +
+                               " dx=" + std::to_string(config.dx1 + dx * i) +
+                               " dy=" + std::to_string(config.dy1 + dy * i) +
+                               ".png",
+                           wxBITMAP_TYPE_PNG);
         wxCommandEvent eventUpdate(wxEVT_COMMAND_BUTTON_CLICKED,
                                    ID_UPDATE_PROGRESS);
         eventUpdate.SetInt((i * 100) / 60);
@@ -216,13 +220,13 @@ void GUIMyFrame1::drawKaleidoscope() {
     wxPoint center = wxPoint(250, 250);
     for (auto phi : axisVect) {
         if (linear) {
-            imgCopy = RotateImageLinear(imgCopy, phi);
-            MirrorRightHalf(imgCopy);
-            imgCopy = RotateImageLinear(imgCopy, -phi);
+            imgResult = RotateImageLinear(imgResult, phi);
+            MirrorRightHalf(imgResult);
+            imgResult = RotateImageLinear(imgResult, -phi);
         } else {
-            imgCopy = RotateImageCubic(imgCopy, phi);
-            MirrorRightHalf(imgCopy);
-            imgCopy = RotateImageCubic(imgCopy, -phi);
+            imgResult = RotateImageCubic(imgResult, phi);
+            MirrorRightHalf(imgResult);
+            imgResult = RotateImageCubic(imgResult, -phi);
         }
     }
 }
@@ -232,7 +236,7 @@ void GUIMyFrame1::resizeImages() {
     imgResized.Rescale(m_panel1->GetSize().x, m_panel1->GetSize().y,
                        wxIMAGE_QUALITY_HIGH);
     img = imgResized.Copy();
-    imgCopy = imgResized.Copy();
+    imgResult = imgResized.Copy();
     toResize = false;
 }
 
@@ -282,10 +286,10 @@ void GUIMyFrame1::translateX(double translation) {
 
 void GUIMyFrame1::drawAxis() {
     double heigth = m_panel1->GetSize().x;
-    wxBitmap bitmap(imgCopy.GetWidth(), imgCopy.GetHeight());
+    wxBitmap bitmap(imgResult.GetWidth(), imgResult.GetHeight());
     wxMemoryDC dc;
     dc.SelectObject(bitmap);
-    dc.DrawBitmap(imgCopy, 0, 0, false);
+    dc.DrawBitmap(imgResult, 0, 0, false);
     dc.SetPen(*wxBLACK_PEN);
     for (auto phi : axisVect) {
         phi = -phi - angle;
@@ -294,7 +298,7 @@ void GUIMyFrame1::drawAxis() {
                     cos((phi - 90) / 360 * 2 * M_PI) * heigth + heigth / 2,
                     sin((phi - 90) / 360 * 2 * M_PI) * heigth + heigth / 2);
     }
-    imgCopy = bitmap.ConvertToImage();
+    imgResult = bitmap.ConvertToImage();
 }
 
 wxImage GUIMyFrame1::RotateImageLinear(const wxImage& source,

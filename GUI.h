@@ -58,6 +58,7 @@ class MyFrame1 : public wxFrame {
     wxButton* saveSeriesButton;
     wxButton* saveButton;
     wxButton* drawButton;
+    wxStaticText* m_staticText20;
 
     // Virtual event handlers, override them in your derived class
     virtual void changeSize(wxSizeEvent& event) { event.Skip(); }
