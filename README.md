@@ -1,1 +1,1 @@
-# kaleidoscope
+# Kaleidoscope
