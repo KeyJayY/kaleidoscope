@@ -17,10 +17,10 @@ void GUIMyFrame1::changeSize(wxSizeEvent& event) {
 }
 
 void GUIMyFrame1::drawOnPaint(wxPaintEvent& event) {
-    if (imgCopy.IsOk()) {
+    if (imgResult.IsOk()) {
         wxPaintDC dc(m_panel1);
         if (drawAxisBool) drawAxis();
-        wxBitmap bitmap(imgResult);
+        wxBitmap bitmap(imgResult);  // TODO: cache?
         dc.DrawBitmap(bitmap, 0, 0, true);
     }
 }
@@ -39,18 +39,19 @@ void GUIMyFrame1::scrollRotate(wxScrollEvent& event) {
 
 void GUIMyFrame1::translateX(wxScrollEvent& event) {
     translationXText->SetLabel(std::to_string(translateXSlider->GetValue()));
-    translateX(translateXSlider->GetValue());
-    translateY(translateYSlider->GetValue());
+    toResize = true;  // trigger translate on repaint
+    if (onChange) Repaint();
 }
 
 void GUIMyFrame1::translateY(wxScrollEvent& event) {
     translationYText->SetLabel(std::to_string(translateYSlider->GetValue()));
-    translateX(translateXSlider->GetValue());
-    translateY(translateYSlider->GetValue());
+    toResize = true;  // trigger translate on repaint
+    if (onChange) Repaint();
 }
 
 void GUIMyFrame1::drawOnChange(wxCommandEvent& event) {
     onChange = drawOnChangeCheckBox->GetValue();
+    Repaint();
 }
 
 void GUIMyFrame1::drawAxisChange(wxCommandEvent& event) {
@@ -153,56 +154,37 @@ void GUIMyFrame1::resetOptions() {
     translationYText->SetLabel("0");
 }
 
+std::function<wxImage(const wxImage&, double)> GUIMyFrame1::getRotateFunc() {
+    return linear ? RotateImageLinear : RotateImageCubic;
+}
+
 void GUIMyFrame1::Repaint() {
+    if (!img.IsOk()) return;
     auto t0 = std::chrono::high_resolution_clock::now();
     if (toResize) {
         resizeImages();
-        translateX(translateXSlider->GetValue());
-        translateY(translateYSlider->GetValue());
+        translateXY(translateXSlider->GetValue(), translateYSlider->GetValue());
     }
-    if (img.IsOk()) {
-        imgResult = img.Copy();
-        if (linear) {
-            imgResult = RotateImageLinear(imgResult, angle);
-            drawKaleidoscope();
-            imgResult = RotateImageLinear(imgResult, -angle);
-        } else {
-            imgResult = RotateImageCubic(imgResult, angle);
-            drawKaleidoscope();
-            imgResult = RotateImageCubic(imgResult, -angle);
-        }
-        Refresh();
-    }
+    drawKaleidoscope(getRotateFunc(), angle);
     auto t1 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> ms_double = t1 - t0;
-    m_staticText20->SetLabelText(std::format("{:.3} ms / {:.1f} FPS",
-                                             ms_double.count(),
-                                             1000.0 / ms_double.count()));
+    auto timeText = std::format("{:.3} ms / {:.1f} FPS", ms_double.count(),
+                                1000.0 / ms_double.count());
+    m_staticText20->SetLabelText(timeText);
+    Refresh();
 }
 
 void GUIMyFrame1::generateSeries(wxString path, Config config) {
-    double oldAngle = angle;
-    bool change = onChange;
-    onChange = false;
     double dx = fabs(config.dx2 - config.dx1) / 60;
     double dy = fabs(config.dy2 - config.dy1) / 60;
     double dfi = fabs(config.fi2 - config.fi1) / 60;
     for (int i = 0; i <= 60; i++) {
-        translateX(config.dx1 + dx * i);
-        translateY(config.dy1 + dy * i);
-        imgResult = img.Copy();
+        translateXY(config.dx1 + dx * i, config.dy1 + dy * i);
         angle = config.fi1 + dfi * i;
-        if (linear) {
-            imgResult = RotateImageLinear(imgResult, angle);
-            drawKaleidoscope();
-            imgResult = RotateImageLinear(imgResult, -angle);
-        } else {
-            imgResult = RotateImageCubic(imgResult, angle);
-            drawKaleidoscope();
-            imgResult = RotateImageCubic(imgResult, -angle);
-        }
+        drawKaleidoscope(getRotateFunc(), angle);
         if (drawAxisBool) drawAxis();
-        imgResult.SaveFile(path + "\\" + std::to_string(i) +
+        imgResult.SaveFile(path + std::filesystem::path::preferred_separator +
+                               std::to_string(i) +
                                " fi=" + std::to_string(config.fi1 + dfi * i) +
                                " dx=" + std::to_string(config.dx1 + dx * i) +
                                " dy=" + std::to_string(config.dy1 + dy * i) +
@@ -213,23 +195,20 @@ void GUIMyFrame1::generateSeries(wxString path, Config config) {
         eventUpdate.SetInt((i * 100) / 60);
         wxQueueEvent(this, eventUpdate.Clone());
     }
-    angle = oldAngle;
-    onChange = change;
+    toResize = true;  // TODO: we should isolate translation and drawing
+    Repaint();        // kaleidoscope to not mutate imgResult and imgResized
 }
 
-void GUIMyFrame1::drawKaleidoscope() {
-    wxPoint center = wxPoint(250, 250);
+void GUIMyFrame1::drawKaleidoscope(
+    std::function<wxImage(const wxImage&, double)> rotateFunc, double angle) {
+    imgResult = img.Copy();
+    imgResult = rotateFunc(imgResult, angle);
     for (auto phi : axisVect) {
-        if (linear) {
-            imgResult = RotateImageLinear(imgResult, phi);
-            MirrorRightHalf(imgResult);
-            imgResult = RotateImageLinear(imgResult, -phi);
-        } else {
-            imgResult = RotateImageCubic(imgResult, phi);
-            MirrorRightHalf(imgResult);
-            imgResult = RotateImageCubic(imgResult, -phi);
-        }
+        imgResult = rotateFunc(imgResult, phi);
+        MirrorRightHalf(imgResult);
+        imgResult = rotateFunc(imgResult, -phi);
     }
+    imgResult = rotateFunc(imgResult, -angle);
 }
 
 void GUIMyFrame1::resizeImages() {
@@ -241,37 +220,32 @@ void GUIMyFrame1::resizeImages() {
     toResize = false;
 }
 
-void GUIMyFrame1::translateX(double translation) {
-    translation = -translation;
+/// img = imgResized with translation
+void GUIMyFrame1::translateXY(double dx, double dy) {
+    // FIXME: make it one loop?
+    int height = imgResized.GetHeight();
+    int width = imgResized.GetWidth();
+    int tx = width * dx / 100;
+    int ty = height * dy / 100;
     img = imgResized.Copy();
     wxImage img1 = img.Copy();
     unsigned char* data1 = img1.GetData();
     unsigned char* resultData = img.GetData();
-    int height = img.GetHeight();
-    int width = img.GetWidth();
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             int index2;
-            if (translation >= 0) {
-                if (x < (int)(width - width * translation / 100))
-                    index2 =
-                        (y * width + x + (int)(width * translation / 100)) * 3;
+            if (tx >= 0) {
+                if (x < width - tx)
+                    index2 = (y * width + x + tx) * 3;
                 else {
-                    index2 = (y * width +
-                              (int)(width - width * translation / 100) - x) *
-                             3;
+                    index2 = (y * width + width - tx - x) * 3;
                 }
             } else {
-                if (x > (int)(width - width * (100 + translation) / 100))
-                    index2 = (y * width + x +
-                              (int)(width * (100 + translation) / 100)) *
-                             3;
+                if (x > tx)
+                    index2 = (y * width + x + width + tx) * 3;
                 else {
-                    index2 =
-                        (y * width +
-                         (int)(width - width * (100 + translation) / 100) - x) *
-                        3;
+                    index2 = (y * width + tx - x) * 3;
                 }
             }
 
@@ -283,10 +257,49 @@ void GUIMyFrame1::translateX(double translation) {
             }
         }
     }
+
+    img1 = img.Copy();
+    data1 = img1.GetData();
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int index2;
+            if (ty >= 0) {
+                if (y <= height - ty)
+                    index2 = ((ty + y) * width + x) * 3;
+                else
+                    index2 = ((2 * height - y - ty) * width + x) * 3;
+            } else {
+                if (y > -ty)
+                    index2 = ((ty + y) * width + x) * 3;
+                else
+                    index2 = ((-y - ty) * width + x) * 3;
+            }
+
+            int index1 = (y * width + x) * 3;
+            if (index2 < height * width * 3 && index2 >= 0) {
+                resultData[index1] = data1[index2];
+                resultData[index1 + 1] = data1[index2 + 1];
+                resultData[index1 + 2] = data1[index2 + 2];
+            }
+        }
+    }
+
+    for (int x = 0; x < width - 1; x++) {
+        int index1 = ((height - ty) * width + x) * 3;
+        if (ty < 0) index1 = (-ty * width + x) * 3;
+        int index2 = ((height - 1) * width + x) * 3;
+        if (index1 < height * width * 3 && index1 >= 0 &&
+            index2 < height * width * 3 && index2 >= 0) {
+            resultData[index1] = data1[index2];
+            resultData[index1 + 1] = data1[index2 + 1];
+            resultData[index1 + 2] = data1[index2 + 2];
+        }
+    }
 }
 
 void GUIMyFrame1::drawAxis() {
-    double heigth = m_panel1->GetSize().x;
+    double height = m_panel1->GetSize().x;
     wxBitmap bitmap(imgResult.GetWidth(), imgResult.GetHeight());
     wxMemoryDC dc;
     dc.SelectObject(bitmap);
@@ -294,10 +307,10 @@ void GUIMyFrame1::drawAxis() {
     dc.SetPen(*wxBLACK_PEN);
     for (auto phi : axisVect) {
         phi = -phi - angle;
-        dc.DrawLine(cos((phi + 90) / 360 * 2 * M_PI) * heigth + heigth / 2,
-                    sin((phi + 90) / 360 * 2 * M_PI) * heigth + heigth / 2,
-                    cos((phi - 90) / 360 * 2 * M_PI) * heigth + heigth / 2,
-                    sin((phi - 90) / 360 * 2 * M_PI) * heigth + heigth / 2);
+        dc.DrawLine(cos(wxDegToRad(phi + 90)) * height + height / 2,
+                    sin(wxDegToRad(phi + 90)) * height + height / 2,
+                    cos(wxDegToRad(phi - 90)) * height + height / 2,
+                    sin(wxDegToRad(phi - 90)) * height + height / 2);
     }
     imgResult = bitmap.ConvertToImage();
 }
@@ -392,65 +405,6 @@ void GUIMyFrame1::OnThreadCompletion(wxCommandEvent& event) {
         dlg->Destroy();
         dlg = nullptr;
     }
-}
-
-void GUIMyFrame1::translateY(double translation) {
-    wxImage img1 = img.Copy();
-    unsigned char* data1 = img1.GetData();
-    unsigned char* resultData = img.GetData();
-    int height = img1.GetHeight();
-    int width = img1.GetWidth();
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            int index2;
-            if (translation >= 0) {
-                if (y <= (int)(height - height * translation / 100))
-                    index2 =
-                        ((int)(height * translation / 100 + y) * width + x) * 3;
-                else
-                    index2 =
-                        ((int)(2 * height - y - height * translation / 100) *
-                             width +
-                         x) *
-                        3;
-            } else {
-                if (y > (int)(height - height * (100 + translation) / 100))
-                    index2 =
-                        ((int)(height * translation / 100 + y) * width + x) * 3;
-                else
-                    index2 = ((int)(height - y -
-                                    height * (100 + translation) / 100) *
-                                  width +
-                              x) *
-                             3;
-            }
-
-            int index1 = (y * width + x) * 3;
-            if (index2 < height * width * 3 && index2 >= 0) {
-                resultData[index1] = data1[index2];
-                resultData[index1 + 1] = data1[index2 + 1];
-                resultData[index1 + 2] = data1[index2 + 2];
-            }
-        }
-    }
-    for (int x = 0; x < width - 1; x++) {
-        int index1 =
-            ((int)(height - height * translation / 100) * width + x) * 3;
-        if (translation < 0)
-            index1 =
-                ((int)(height - height * (100 + translation) / 100) * width +
-                 x) *
-                3;
-        int index2 = ((height - 1) * width + x) * 3;
-        if (index1 < height * width * 3 && index1 >= 0 &&
-            index2 < height * width * 3 && index2 >= 0) {
-            resultData[index1] = data1[index2];
-            resultData[index1 + 1] = data1[index2 + 1];
-            resultData[index1 + 2] = data1[index2 + 2];
-        }
-    }
-
-    if (onChange) Repaint();
 }
 
 void GUIMyFrame1::UpdateProgressBar(wxCommandEvent& event) {
