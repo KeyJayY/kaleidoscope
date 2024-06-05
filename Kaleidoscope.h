@@ -19,7 +19,7 @@ struct Kaleidoscope {
         BITMAP,
         FULL
     } cache_state;
-    double side = 500;
+    int side = 500;
     /// -1..1
     double translate_x = 0;
     /// -1..1

@@ -162,68 +162,30 @@ void Kaleidoscope::syncTranslate() {
     int tx = side * translate_x;
     int ty = side * translate_y;
 
-    // FIXME: make it one loop?
-    wxImage deleteme = wxImage(resized_image.GetSize(), false);  // step 1
-    translated_image = wxImage(resized_image.GetSize(), false);  // step 2
-    unsigned char* step0 = resized_image.GetData();
-    unsigned char* step1 = deleteme.GetData();
-    unsigned char* step2 = translated_image.GetData();
+    translated_image = wxImage(resized_image.GetSize(), false);
+    unsigned char* original = resized_image.GetData();
+    unsigned char* transformed = translated_image.GetData();
 
-    for (int y = 0; y < side; y++) {
-        for (int x = 0; x < side; x++) {
-            int index2;
-            if (tx >= 0) {
-                if (x < side - tx)
-                    index2 = (y * side + x + tx) * 3;
-                else {
-                    index2 = (y * side + side - tx - x) * 3;
-                }
-            } else {
-                if (x > tx)
-                    index2 = (y * side + x + tx) * 3;
-                else {
-                    index2 = (y * side + tx - x) * 3;
-                }
-            }
-            int index1 = (y * side + x) * 3;
-            if (index2 < side * side * 3 && index2 >= 0) {
-                step1[index1] = step0[index2];
-                step1[index1 + 1] = step0[index2 + 1];
-                step1[index1 + 2] = step0[index2 + 2];
-            }
-        }
-    }
-    for (int y = 0; y < side; y++) {
-        for (int x = 0; x < side; x++) {
-            int index2;
-            if (ty >= 0) {
-                if (y <= side - ty)
-                    index2 = ((ty + y) * side + x) * 3;
+#pragma omp parallel for
+    for (int yo = 0; yo < side; yo++) {
+        for (int xo = 0; xo < side; xo++) {
+            int x = xo + tx, y = yo + ty;
+
+            if (0 > x || x >= side)
+                if (tx >= 0)
+                    x = 2 * side - x - 1;
                 else
-                    index2 = ((2 * side - y - ty) * side + x) * 3;
-            } else {
-                if (y > -ty)
-                    index2 = ((ty + y) * side + x) * 3;
+                    x = -x - 1;
+
+            if (0 > y || y >= side)
+                if (ty >= 0)
+                    y = 2 * side - y - 1;
                 else
-                    index2 = ((-y - ty) * side + x) * 3;
-            }
-            int index1 = (y * side + x) * 3;
-            if (index2 < side * side * 3 && index2 >= 0) {
-                step2[index1] = step1[index2];
-                step2[index1 + 1] = step1[index2 + 1];
-                step2[index1 + 2] = step1[index2 + 2];
-            }
-        }
-    }
-    for (int x = 0; x < side - 1; x++) {
-        int index1 = ((side - ty) * side + x) * 3;
-        if (ty < 0) index1 = (-ty * side + x) * 3;
-        int index2 = ((side - 1) * side + x) * 3;
-        if (index1 < side * side * 3 && index1 >= 0 &&
-            index2 < side * side * 3 && index2 >= 0) {
-            step2[index1] = step1[index2];
-            step2[index1 + 1] = step1[index2 + 1];
-            step2[index1 + 2] = step1[index2 + 2];
+                    y = -y - 1;
+
+            int i = yo * side + xo, j = y * side + x;
+            for (int k = 0; k < 3; ++k)
+                transformed[i * 3 + k] = original[j * 3 + k];
         }
     }
 }
