@@ -23,133 +23,19 @@ struct AxisIterator {
     iterator end() { return iterator(_axis, _axis); }
 };
 
-wxImage RotateImageLinear(const wxImage& source, double angleDegrees) {
-    const double angleRadians = wxDegToRad(angleDegrees);
-    int width = source.GetWidth();
-    int height = source.GetHeight();
-
-    wxImage result(width, height);
-    result.InitAlpha();
-
-    unsigned char* srcData = source.GetData();
-    unsigned char* dstData = result.GetData();
-
-    int centerX = width / 2;
-    int centerY = height / 2;
-
-#pragma omp parallel for
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            int srcX = int(cos(angleRadians) * (x - centerX) +
-                           sin(angleRadians) * (y - centerY) + centerX);
-            int srcY = int(-sin(angleRadians) * (x - centerX) +
-                           cos(angleRadians) * (y - centerY) + centerY);
-            if (srcX < 0) srcX = -srcX;
-            if (srcY < 0) srcY = -srcY;
-            if (srcX >= width) srcX = 2 * width - srcX - 1;
-            if (srcY >= height) srcY = 2 * height - srcY - 1;
-
-            int srcIndex = (srcY * width + srcX) * 3;
-            int dstIndex = (y * width + x) * 3;
-
-            dstData[dstIndex] = srcData[srcIndex];
-            dstData[dstIndex + 1] = srcData[srcIndex + 1];
-            dstData[dstIndex + 2] = srcData[srcIndex + 2];
-        }
-    }
-    return result;
-}
-
-float cubicInterpolate(float p[4], float x) {
+inline float cubicInterpolate(float p[4], float x) {
     return p[1] + 0.5 * x *
                       (p[2] - p[0] +
                        x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] +
                             x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
 }
 
-float bicubicInterpolate(float patch[4][4], float x, float y) {
+inline float bicubicInterpolate(float patch[4][4], float x, float y) {
     float arr[4];
     for (int i = 0; i < 4; i++) {
         arr[i] = cubicInterpolate(patch[i], x);
     }
     return cubicInterpolate(arr, y);
-}
-
-wxImage MirrorRightHalf(const wxImage& source) {
-    const int width = source.GetWidth();
-    const int height = source.GetHeight();
-    wxImage result(source);
-
-    unsigned char* srcData = source.GetData();
-    unsigned char* resultData = result.GetData();
-
-#pragma omp parallel for
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width / 2; x++) {
-            int srcX = width - 1 - x;
-            int srcPos = (y * width + srcX) * 3;
-            int dstPos = (y * width + x) * 3;
-
-            resultData[dstPos] = srcData[srcPos];
-            resultData[dstPos + 1] = srcData[srcPos + 1];
-            resultData[dstPos + 2] = srcData[srcPos + 2];
-        }
-    }
-    return result;
-}
-
-wxImage RotateImageCubic(const wxImage& source, double angleDegrees) {
-    const double angleRadians = -wxDegToRad(angleDegrees);
-    int width = source.GetWidth();
-    int height = source.GetHeight();
-
-    wxImage result(width, width);
-    result.InitAlpha();
-
-    unsigned char* srcData = source.GetData();
-    unsigned char* dstData = result.GetData();
-
-#pragma omp parallel for
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            double dx = (x - width / 2);
-            double dy = (y - height / 2);
-            double srcX =
-                cos(angleRadians) * dx - sin(angleRadians) * dy + width / 2;
-            double srcY =
-                sin(angleRadians) * dx + cos(angleRadians) * dy + height / 2;
-
-            int ix = (int)floor(srcX);
-            int iy = (int)floor(srcY);
-            float fx = srcX - ix;
-            float fy = srcY - iy;
-
-            if (ix < 1) ix = 1 - ix;
-            if (ix >= width - 2) ix = 2 * (width - 2) - ix - 2;
-            if (iy < 1) iy = 1 - iy;
-            if (iy >= height - 2) iy = 2 * (height - 2) - iy - 2;
-
-            float patch[3][4][4];
-            for (int c = 0; c < 3; c++) {
-                for (int j = -1; j <= 2; j++) {
-                    for (int i = -1; i <= 2; i++) {
-                        int pos = ((iy + j) * width + (ix + i)) * 3 + c;
-                        patch[c][j + 1][i + 1] = srcData[pos];
-                    }
-                }
-            }
-            float red = bicubicInterpolate(patch[0], fx, fy);
-            float green = bicubicInterpolate(patch[1], fx, fy);
-            float blue = bicubicInterpolate(patch[2], fx, fy);
-
-            int dstIndex = (y * width + x) * 3;
-            dstData[dstIndex] = std::min(std::max(int(red), 0), 255);
-            dstData[dstIndex + 1] = std::min(std::max(int(green), 0), 255);
-            dstData[dstIndex + 2] = std::min(std::max(int(blue), 0), 255);
-            result.SetAlpha(x, y, 255);
-        }
-    }
-    return result;
 }
 
 void Kaleidoscope::syncResize() {
@@ -190,21 +76,97 @@ void Kaleidoscope::syncTranslate() {
     }
 }
 
-std::map<Kaleidoscope::InterpolationMethod,
-         std::function<wxImage(const wxImage&, double)>>
-    rotateFuncs = {{Kaleidoscope::LINEAR, RotateImageLinear},
-                   {Kaleidoscope::CUBIC, RotateImageCubic}};
+std::tuple<int, int, int> InterpolateImageLinear(const wxImage& img, double dx,
+                                                 double dy) {
+    unsigned char* srcData = img.GetData();
+    int height = img.GetSize().GetHeight();
+    int width = img.GetSize().GetWidth();
+    int x = dx, y = dy;
+    if (x < 0) x = -x;
+    if (y < 0) y = -y;
+    if (x >= width) x = 2 * width - x - 1;
+    if (y >= height) y = 2 * height - y - 1;
+
+    int i = (y * width + x) * 3;
+
+    return {srcData[i], srcData[i + 1], srcData[i + 2]};
+}
+
+std::tuple<int, int, int> InterpolateImageCubic(const wxImage& img, double x,
+                                                double y) {
+    unsigned char* srcData = img.GetData();
+    auto [width, height] = img.GetSize();
+
+    int ix = x;
+    int iy = y;
+    float fx = x - ix;
+    float fy = y - iy;
+
+    if (ix < 1) ix = 1 - ix;
+    if (ix >= width - 2) ix = 2 * (width - 2) - ix - 2;
+    if (iy < 1) iy = 1 - iy;
+    if (iy >= height - 2) iy = 2 * (height - 2) - iy - 2;
+
+    float patch[3][4][4];
+    for (int c = 0; c < 3; c++) {
+        for (int j = -1; j <= 2; j++) {
+            for (int i = -1; i <= 2; i++) {
+                int pos = ((iy + j) * width + (ix + i)) * 3 + c;
+                patch[c][j + 1][i + 1] = srcData[pos];
+            }
+        }
+    }
+
+    float red = bicubicInterpolate(patch[0], fx, fy);
+    float green = bicubicInterpolate(patch[1], fx, fy);
+    float blue = bicubicInterpolate(patch[2], fx, fy);
+
+    auto clamp = [](int x) { return std::min(std::max(x, 0), 255); };
+    return {clamp(red), clamp(green), clamp(blue)};
+}
+
+std::map<
+    Kaleidoscope::InterpolationMethod,
+    std::function<std::tuple<char, char, char>(const wxImage&, double, double)>>
+    interpolations = {{Kaleidoscope::LINEAR, InterpolateImageLinear},
+                      {Kaleidoscope::CUBIC, InterpolateImageCubic}};
+
+inline std::pair<int, double> divmod(double a, double n) {
+    int c = a / n;
+    double r = -c * n + a + (a < 0 ? n : 0);
+    return {c, r};
+}
+
+inline double mirrormod(double a, double axis) {
+    double n = axis == 0 ? 2 * M_PI : 2 * M_PI / (2 * axis);
+    auto [_, b] = divmod(-a - M_PI / 2, 2 * M_PI);
+    auto [c, r] = divmod(b, n);
+    if (c % 2 != 0) r = n - r;
+    return -r - M_PI / 2;
+}
 
 void Kaleidoscope::syncGenerate() {
-    auto rotateFunc = rotateFuncs[interpolation];
-    generated_image = translated_image.Copy();
-    generated_image = rotateFunc(generated_image, angle);
-    for (auto phi : AxisIterator(axis)) {
-        generated_image = rotateFunc(generated_image, phi);
-        MirrorRightHalf(generated_image);
-        generated_image = rotateFunc(generated_image, -phi);
+    auto interpolate = interpolations[interpolation];
+    double offset = wxDegToRad(angle);
+    generated_image = wxImage(resized_image.GetSize(), false);
+    generated_image.InitAlpha();
+
+    unsigned char* dstData = generated_image.GetData();
+
+#pragma omp parallel for
+    for (int y = 0; y < side; y++) {
+        for (int x = 0; x < side; x++) {
+            double phi = atan2(y - side / 2., x - side / 2.);
+            double d = sqrt(pow(x - side / 2., 2) + pow(y - side / 2., 2));
+            double a = mirrormod(phi + offset, axis) - offset;
+            double srcX = d * cos(a) + side / 2.;
+            double srcY = d * sin(a) + side / 2.;
+            auto [r, g, b] = interpolate(translated_image, srcX, srcY);
+
+            int i = (y * side + x) * 3;
+            dstData[i] = r, dstData[i + 1] = g, dstData[i + 2] = b;
+        }
     }
-    generated_image = rotateFunc(generated_image, -angle);
 }
 
 void Kaleidoscope::syncAxis() {
