@@ -38,46 +38,48 @@ class MyFrame1 : public wxFrame {
    private:
    protected:
     wxPanel* m_panel1;
-    wxStaticText* m_staticText1;
-    wxSlider* axis;
-    wxStaticText* axisNumberText;
-    wxStaticText* m_staticText3;
-    wxSlider* rotate;
-    wxStaticText* rotateText;
-    wxStaticText* m_staticText5;
-    wxSlider* translateXSlider;
-    wxStaticText* translationXText;
-    wxStaticText* m_staticText9;
-    wxSlider* translateYSlider;
-    wxStaticText* translationYText;
-    wxCheckBox* drawOnChangeCheckBox;
-    wxCheckBox* drawAxisCheck;
-    wxStaticText* m_staticText12;
-    wxChoice* interpolator;
-    wxButton* loadImageButton;
-    wxButton* saveSeriesButton;
-    wxButton* saveButton;
-    wxButton* drawButton;
-    wxStaticText* m_staticText20;
+    wxStaticText* m_staticTextAxis;
+    wxSlider* m_sliderAxis;
+    wxStaticText* m_textAxis;
+    wxStaticText* m_staticTextAngle;
+    wxSlider* m_sliderAngle;
+    wxStaticText* m_textAngle;
+    wxStaticText* m_staticTextTranslateX;
+    wxSlider* m_sliderTranslateX;
+    wxStaticText* m_textTranslateX;
+    wxStaticText* m_staticTextTranslateY;
+    wxSlider* m_sliderTranslateY;
+    wxStaticText* m_textTranslateY;
+    wxStaticText* m_staticTextInterpolator;
+    wxChoice* m_choiceInterpolator;
+    wxCheckBox* m_checkBoxAutoUpdate;
+    wxCheckBox* m_checkBoxDrawAxis;
+    wxButton* m_buttonLoadImage;
+    wxButton* m_buttonSaveSeries;
+    wxButton* m_buttonSave;
+    wxButton* m_buttonDraw;
+    wxStaticText* m_textStatusBar;
 
     // Virtual event handlers, override them in your derived class
     virtual void changeSize(wxSizeEvent& event) { event.Skip(); }
     virtual void drawOnPaint(wxPaintEvent& event) { event.Skip(); }
-    virtual void scrollChangeAxisNumber(wxScrollEvent& event) { event.Skip(); }
-    virtual void scrollRotate(wxScrollEvent& event) { event.Skip(); }
-    virtual void translateX(wxScrollEvent& event) { event.Skip(); }
-    virtual void translateY(wxScrollEvent& event) { event.Skip(); }
-    virtual void drawOnChange(wxCommandEvent& event) { event.Skip(); }
-    virtual void drawAxisChange(wxCommandEvent& event) { event.Skip(); }
-    virtual void changeInterpolator(wxCommandEvent& event) { event.Skip(); }
-    virtual void loadImage(wxCommandEvent& event) { event.Skip(); }
+    virtual void scrollChangeAxis(wxScrollEvent& event) { event.Skip(); }
+    virtual void scrollChangeAngle(wxScrollEvent& event) { event.Skip(); }
+    virtual void scrollChangeTranslateX(wxScrollEvent& event) { event.Skip(); }
+    virtual void scrollChangeTranslateY(wxScrollEvent& event) { event.Skip(); }
+    virtual void choiceChangeInterpolator(wxCommandEvent& event) {
+        event.Skip();
+    }
+    virtual void choiceChangeAutoUpdate(wxCommandEvent& event) { event.Skip(); }
+    virtual void choiceChangeDrawAxis(wxCommandEvent& event) { event.Skip(); }
+    virtual void clickLoadImage(wxCommandEvent& event) { event.Skip(); }
     virtual void clickSaveSeries(wxCommandEvent& event) { event.Skip(); }
     virtual void clickSave(wxCommandEvent& event) { event.Skip(); }
     virtual void clickDraw(wxCommandEvent& event) { event.Skip(); }
 
    public:
     MyFrame1(wxWindow* parent, wxWindowID id = wxID_ANY,
-             const wxString& title = wxEmptyString,
+             const wxString& title = wxT("KeyJayY/kaleidoscope 2024"),
              const wxPoint& pos = wxDefaultPosition,
              const wxSize& size = wxSize(1050, 550),
              long style = wxDEFAULT_FRAME_STYLE | wxBORDER_NONE |
@@ -92,32 +94,33 @@ class MyFrame1 : public wxFrame {
 class MyDialog1 : public wxDialog {
    private:
    protected:
-    wxStaticText* m_staticText14;
-    wxStaticText* m_staticText10;
-    wxTextCtrl* fi1Box;
-    wxStaticText* m_staticText11;
-    wxTextCtrl* fi2Box;
+    wxStaticText* m_staticTextAngle;
+    wxStaticText* m_staticTextAngle1;
+    wxTextCtrl* m_textCtrlAngle1;
+    wxStaticText* m_staticTextAngle2;
+    wxTextCtrl* m_textCtrlAngle2;
     wxStaticLine* m_staticline1;
-    wxStaticText* m_staticText16;
-    wxStaticText* m_staticText12;
-    wxTextCtrl* dx1Box;
-    wxStaticText* m_staticText13;
-    wxTextCtrl* dx2Box;
+    wxStaticText* m_staticTextTranslateX;
+    wxStaticText* m_staticTextTranslateX1;
+    wxTextCtrl* m_textCtrlTranslateX1;
+    wxStaticText* m_staticTextTranslateX2;
+    wxTextCtrl* m_textCtrlTranslateX2;
     wxStaticLine* m_staticline2;
-    wxStaticText* m_staticText17;
-    wxStaticText* m_staticText18;
-    wxTextCtrl* dy1Box;
-    wxStaticText* m_staticText19;
-    wxTextCtrl* dy2Box;
+    wxStaticText* m_staticTextTranslateY;
+    wxStaticText* m_staticTextTranslateY1;
+    wxTextCtrl* m_textCtrlTranslateY1;
+    wxStaticText* m_staticTextTranslateY2;
+    wxTextCtrl* m_textCtrlTranslateY2;
     wxStaticLine* m_staticline3;
-    wxButton* generateButton;
+    wxButton* m_buttonGenerate;
 
     // Virtual event handlers, override them in your derived class
-    virtual void generate(wxCommandEvent& event) { event.Skip(); }
+    virtual void clickGenerate(wxCommandEvent& event) { event.Skip(); }
 
    public:
     MyDialog1(wxWindow* parent, wxWindowID id = wxID_ANY,
-              const wxString& title = wxEmptyString,
+              const wxString& title =
+                  wxT("KeyJayY/kaleidoscope 2024 - Wygeneruj ciąg"),
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxSize(550, 400),
               long style = wxDEFAULT_DIALOG_STYLE);

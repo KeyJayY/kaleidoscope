@@ -50,14 +50,14 @@ class GUIMyFrame1 : public MyFrame1 {
     // Handlers for MyFrame1 events.
     void changeSize(wxSizeEvent& event);
     void drawOnPaint(wxPaintEvent& event);
-    void scrollChangeAxisNumber(wxScrollEvent& event);
-    void scrollRotate(wxScrollEvent& event);
-    void translateX(wxScrollEvent& event);
-    void translateY(wxScrollEvent& event);
-    void drawOnChange(wxCommandEvent& event);
-    void drawAxisChange(wxCommandEvent& event);
-    void changeInterpolator(wxCommandEvent& event);
-    void loadImage(wxCommandEvent& event);
+    void scrollChangeAxis(wxScrollEvent& event);
+    void scrollChangeAngle(wxScrollEvent& event);
+    void scrollChangeTranslateX(wxScrollEvent& event);
+    void scrollChangeTranslateY(wxScrollEvent& event);
+    void choiceChangeInterpolator(wxCommandEvent& event);
+    void choiceChangeAutoUpdate(wxCommandEvent& event);
+    void choiceChangeDrawAxis(wxCommandEvent& event);
+    void clickLoadImage(wxCommandEvent& event);
     void clickSaveSeries(wxCommandEvent& event);
     void clickSave(wxCommandEvent& event);
     void clickDraw(wxCommandEvent& event);
@@ -67,18 +67,14 @@ class GUIMyFrame1 : public MyFrame1 {
     GUIMyFrame1(wxWindow* parent);
     //// end generated class members
     Kaleidoscope gen;
-    const wxWindowID windowId = wxNewId();
-    const long ID_UPDATE_PROGRESS = wxNewId();
+    const wxWindowID ID_WINDOW = wxNewId();
+    const wxWindowID ID_UPDATE_PROGRESS = wxNewId();
     LoadingDialog* dlg;
     wxTimer resizeTimer;
     bool auto_update = false;
     void resetOptions();
     bool ensureImageLoaded();
-    void Repaint();
     void generateSeries(wxString path, Config config);
-    void OnThreadCompletion(wxCommandEvent& event);
-    void UpdateProgressBar(wxCommandEvent& event);
-    void onResizeTimer(wxTimerEvent& event);
 };
 
 #endif  // __GUIMyFrame1__

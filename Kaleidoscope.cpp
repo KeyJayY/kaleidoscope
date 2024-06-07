@@ -188,7 +188,6 @@ void Kaleidoscope::setCacheState(Kaleidoscope::CacheState state) {
 
 void Kaleidoscope::updateCache(bool onlyImage) {
     auto t0 = std::chrono::high_resolution_clock::now();
-
     switch (cache_state) {
         case NO_IMAGE:
             return;
@@ -264,6 +263,9 @@ void Kaleidoscope::setImage(const wxImage img) {
 }
 
 bool Kaleidoscope::isImageLoaded() { return original_image.IsOk(); }
+
+const wxImage& Kaleidoscope::getOriginalImage() { return original_image; }
+
 const wxImage& Kaleidoscope::getImage() {
     updateCache(true);
     return generated_image;

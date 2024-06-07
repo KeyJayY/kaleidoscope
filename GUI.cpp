@@ -22,173 +22,165 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
     m_panel1->SetBackgroundColour(
         wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT));
 
-    bSizer1->Add(m_panel1, 0, wxALIGN_CENTER | wxALL | wxEXPAND | wxSHAPED, 5);
+    bSizer1->Add(m_panel1, 0,
+                 wxALIGN_CENTER_VERTICAL | wxALL | wxEXPAND | wxSHAPED, 5);
 
-    wxBoxSizer* bSizer7;
-    bSizer7 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* bSizer2;
+    bSizer2 = new wxBoxSizer(wxVERTICAL);
+
+    bSizer2->Add(0, 0, 1, wxEXPAND, 5);
 
     wxBoxSizer* bSizer3;
     bSizer3 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText1 =
+    m_staticTextAxis =
         new wxStaticText(this, wxID_ANY, wxString::FromUTF8("liczba osi"),
                          wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText1->Wrap(-1);
-    bSizer3->Add(m_staticText1, 0, wxALIGN_CENTER | wxALL, 5);
+    m_staticTextAxis->Wrap(-1);
+    bSizer3->Add(m_staticTextAxis, 0, wxALIGN_CENTER | wxALL, 5);
 
-    axis = new wxSlider(this, wxID_ANY, 0, 0, 20, wxDefaultPosition,
-                        wxDefaultSize, wxSL_HORIZONTAL);
-    bSizer3->Add(axis, 1, wxALIGN_CENTER | wxALL, 5);
+    m_sliderAxis = new wxSlider(this, wxID_ANY, 0, 0, 20, wxDefaultPosition,
+                                wxDefaultSize, wxSL_HORIZONTAL);
+    bSizer3->Add(m_sliderAxis, 1, wxALIGN_CENTER | wxALL, 5);
 
-    axisNumberText = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("0"),
-                                      wxDefaultPosition, wxDefaultSize, 0);
-    axisNumberText->Wrap(-1);
-    bSizer3->Add(axisNumberText, 0, wxALIGN_CENTER | wxALL, 20);
+    m_textAxis = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("0"),
+                                  wxDefaultPosition, wxDefaultSize, 0);
+    m_textAxis->Wrap(-1);
+    bSizer3->Add(m_textAxis, 0, wxALIGN_CENTER | wxALL, 20);
 
-    bSizer7->Add(bSizer3, 1, wxEXPAND | wxLEFT | wxRIGHT, 5);
+    bSizer2->Add(bSizer3, 0, wxALL | wxEXPAND, 5);
 
     wxBoxSizer* bSizer4;
     bSizer4 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText3 =
+    m_staticTextAngle =
         new wxStaticText(this, wxID_ANY, wxString::FromUTF8("obrót o kąt"),
                          wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText3->Wrap(-1);
-    bSizer4->Add(m_staticText3, 0, wxALIGN_CENTER | wxALL, 5);
+    m_staticTextAngle->Wrap(-1);
+    bSizer4->Add(m_staticTextAngle, 0, wxALIGN_CENTER | wxALL, 5);
 
-    rotate = new wxSlider(this, wxID_ANY, 0, 0, 360, wxDefaultPosition,
-                          wxDefaultSize, wxSL_HORIZONTAL);
-    bSizer4->Add(rotate, 1, wxALIGN_CENTER | wxALL, 5);
+    m_sliderAngle = new wxSlider(this, wxID_ANY, 0, 0, 360, wxDefaultPosition,
+                                 wxDefaultSize, wxSL_HORIZONTAL);
+    bSizer4->Add(m_sliderAngle, 1, wxALIGN_CENTER | wxALL, 5);
 
-    rotateText = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("0"),
-                                  wxDefaultPosition, wxDefaultSize, 0);
-    rotateText->Wrap(-1);
-    bSizer4->Add(rotateText, 0, wxALIGN_CENTER | wxALL, 20);
+    m_textAngle = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("0"),
+                                   wxDefaultPosition, wxDefaultSize, 0);
+    m_textAngle->Wrap(-1);
+    bSizer4->Add(m_textAngle, 0, wxALIGN_CENTER | wxALL, 20);
 
-    bSizer7->Add(bSizer4, 1, wxEXPAND | wxLEFT | wxRIGHT, 5);
+    bSizer2->Add(bSizer4, 0, wxALL | wxEXPAND, 5);
 
     wxBoxSizer* bSizer5;
     bSizer5 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText5 = new wxStaticText(this, wxID_ANY,
-                                     wxString::FromUTF8("przesuń w poziomie"),
-                                     wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText5->Wrap(-1);
-    bSizer5->Add(m_staticText5, 0, wxALIGN_CENTER | wxALL, 5);
-
-    translateXSlider =
-        new wxSlider(this, wxID_ANY, 0, -100, 100, wxDefaultPosition,
-                     wxDefaultSize, wxSL_HORIZONTAL);
-    bSizer5->Add(translateXSlider, 1, wxALIGN_CENTER | wxALL, 5);
-
-    translationXText = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("0"),
-                                        wxDefaultPosition, wxDefaultSize, 0);
-    translationXText->Wrap(-1);
-    bSizer5->Add(translationXText, 0, wxALIGN_CENTER | wxALL, 20);
-
-    bSizer7->Add(bSizer5, 1, wxEXPAND | wxLEFT | wxRIGHT, 5);
-
-    wxBoxSizer* bSizer8;
-    bSizer8 = new wxBoxSizer(wxHORIZONTAL);
-
-    m_staticText9 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("przesuń w pionie"),
-                         wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText9->Wrap(-1);
-    bSizer8->Add(m_staticText9, 0, wxALIGN_CENTER | wxALL, 5);
-
-    translateYSlider =
-        new wxSlider(this, wxID_ANY, 0, -100, 100, wxDefaultPosition,
-                     wxDefaultSize, wxSL_HORIZONTAL);
-    bSizer8->Add(translateYSlider, 1, wxALIGN_CENTER | wxALL, 5);
-
-    translationYText = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("0"),
-                                        wxDefaultPosition, wxDefaultSize, 0);
-    translationYText->Wrap(-1);
-    bSizer8->Add(translationYText, 0, wxALIGN_CENTER | wxALL, 20);
-
-    bSizer7->Add(bSizer8, 1, wxEXPAND | wxLEFT | wxRIGHT, 5);
-
-    wxBoxSizer* bSizer91;
-    bSizer91 = new wxBoxSizer(wxHORIZONTAL);
-
-    drawOnChangeCheckBox = new wxCheckBox(
-        this, wxID_ANY, wxString::FromUTF8("rysowanie przy każdej zmianie"),
+    m_staticTextTranslateX = new wxStaticText(
+        this, wxID_ANY, wxString::FromUTF8("przesuń w poziomie"),
         wxDefaultPosition, wxDefaultSize, 0);
-    bSizer91->Add(drawOnChangeCheckBox, 0, wxALL | wxEXPAND, 5);
+    m_staticTextTranslateX->Wrap(-1);
+    bSizer5->Add(m_staticTextTranslateX, 0, wxALIGN_CENTER | wxALL, 5);
 
-    drawAxisCheck =
-        new wxCheckBox(this, wxID_ANY, wxString::FromUTF8("rysuj osie"),
-                       wxDefaultPosition, wxDefaultSize, 0);
-    drawAxisCheck->SetValue(true);
-    bSizer91->Add(drawAxisCheck, 0, wxALIGN_CENTER | wxALL, 5);
+    m_sliderTranslateX =
+        new wxSlider(this, wxID_ANY, 0, -100, 100, wxDefaultPosition,
+                     wxDefaultSize, wxSL_HORIZONTAL);
+    bSizer5->Add(m_sliderTranslateX, 1, wxALIGN_CENTER | wxALL, 5);
 
-    bSizer7->Add(bSizer91, 0, wxALIGN_CENTER, 5);
+    m_textTranslateX = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("0"),
+                                        wxDefaultPosition, wxDefaultSize, 0);
+    m_textTranslateX->Wrap(-1);
+    bSizer5->Add(m_textTranslateX, 0, wxALIGN_CENTER | wxALL, 20);
 
-    wxBoxSizer* bSizer9;
-    bSizer9 = new wxBoxSizer(wxHORIZONTAL);
-
-    m_staticText12 =
-        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("interpolator"),
-                         wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText12->Wrap(-1);
-    bSizer9->Add(m_staticText12, 1, wxALIGN_CENTER | wxALL, 5);
-
-    wxString interpolatorChoices[] = {wxString::FromUTF8("liniowy"),
-                                      wxString::FromUTF8("kubiczny")};
-    int interpolatorNChoices = sizeof(interpolatorChoices) / sizeof(wxString);
-    interpolator =
-        new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                     interpolatorNChoices, interpolatorChoices, 0);
-    interpolator->SetSelection(0);
-    bSizer9->Add(interpolator, 0, wxALIGN_CENTER | wxALL, 5);
-
-    bSizer7->Add(bSizer9, 1, wxALIGN_CENTER, 5);
+    bSizer2->Add(bSizer5, 0, wxALL | wxEXPAND, 5);
 
     wxBoxSizer* bSizer6;
     bSizer6 = new wxBoxSizer(wxHORIZONTAL);
 
-    bSizer6->Add(0, 0, 1, wxEXPAND, 5);
+    m_staticTextTranslateY =
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("przesuń w pionie"),
+                         wxDefaultPosition, wxDefaultSize, 0);
+    m_staticTextTranslateY->Wrap(-1);
+    bSizer6->Add(m_staticTextTranslateY, 0, wxALIGN_CENTER | wxALL, 5);
 
-    loadImageButton =
+    m_sliderTranslateY =
+        new wxSlider(this, wxID_ANY, 0, -100, 100, wxDefaultPosition,
+                     wxDefaultSize, wxSL_HORIZONTAL);
+    bSizer6->Add(m_sliderTranslateY, 1, wxALIGN_CENTER | wxALL, 5);
+
+    m_textTranslateY = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("0"),
+                                        wxDefaultPosition, wxDefaultSize, 0);
+    m_textTranslateY->Wrap(-1);
+    bSizer6->Add(m_textTranslateY, 0, wxALIGN_CENTER | wxALL, 20);
+
+    bSizer2->Add(bSizer6, 0, wxALL | wxEXPAND, 5);
+
+    wxBoxSizer* bSizer7;
+    bSizer7 = new wxBoxSizer(wxHORIZONTAL);
+
+    m_staticTextInterpolator =
+        new wxStaticText(this, wxID_ANY, wxString::FromUTF8("interpolator:"),
+                         wxDefaultPosition, wxDefaultSize, 0);
+    m_staticTextInterpolator->Wrap(-1);
+    bSizer7->Add(m_staticTextInterpolator, 1, wxALIGN_CENTER_VERTICAL | wxALL,
+                 5);
+
+    wxString m_choiceInterpolatorChoices[] = {wxString::FromUTF8("liniowy"),
+                                              wxString::FromUTF8("kubiczny")};
+    int m_choiceInterpolatorNChoices =
+        sizeof(m_choiceInterpolatorChoices) / sizeof(wxString);
+    m_choiceInterpolator = new wxChoice(
+        this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+        m_choiceInterpolatorNChoices, m_choiceInterpolatorChoices, 0);
+    m_choiceInterpolator->SetSelection(0);
+    bSizer7->Add(m_choiceInterpolator, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+    m_checkBoxAutoUpdate = new wxCheckBox(
+        this, wxID_ANY, wxString::FromUTF8("rysowanie przy każdej zmianie"),
+        wxDefaultPosition, wxDefaultSize, 0);
+    bSizer7->Add(m_checkBoxAutoUpdate, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+    m_checkBoxDrawAxis =
+        new wxCheckBox(this, wxID_ANY, wxString::FromUTF8("rysuj osie"),
+                       wxDefaultPosition, wxDefaultSize, 0);
+    m_checkBoxDrawAxis->SetValue(true);
+    bSizer7->Add(m_checkBoxDrawAxis, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+    bSizer2->Add(bSizer7, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+
+    wxBoxSizer* bSizer8;
+    bSizer8 = new wxBoxSizer(wxHORIZONTAL);
+
+    m_buttonLoadImage =
         new wxButton(this, wxID_ANY, wxString::FromUTF8("Wczytaj obraz"),
                      wxDefaultPosition, wxDefaultSize, 0);
-    bSizer6->Add(loadImageButton, 0, wxALL, 5);
+    bSizer8->Add(m_buttonLoadImage, 1, wxALL, 5);
 
-    bSizer6->Add(0, 0, 1, wxEXPAND, 5);
-
-    saveSeriesButton =
+    m_buttonSaveSeries =
         new wxButton(this, wxID_ANY, wxString::FromUTF8("Wygeneruj ciąg"),
                      wxDefaultPosition, wxDefaultSize, 0);
-    bSizer6->Add(saveSeriesButton, 0, wxALL, 5);
+    bSizer8->Add(m_buttonSaveSeries, 1, wxALL, 5);
 
-    bSizer6->Add(0, 0, 1, wxEXPAND, 5);
+    m_buttonSave = new wxButton(this, wxID_ANY, wxString::FromUTF8("Zapisz"),
+                                wxDefaultPosition, wxDefaultSize, 0);
+    bSizer8->Add(m_buttonSave, 1, wxALL, 5);
 
-    saveButton = new wxButton(this, wxID_ANY, wxString::FromUTF8("Zapisz"),
-                              wxDefaultPosition, wxDefaultSize, 0);
-    bSizer6->Add(saveButton, 0, wxALL, 5);
+    m_buttonDraw = new wxButton(this, wxID_ANY, wxString::FromUTF8("Rysuj"),
+                                wxDefaultPosition, wxDefaultSize, 0);
+    bSizer8->Add(m_buttonDraw, 1, wxALL, 5);
 
-    bSizer6->Add(0, 0, 1, wxEXPAND, 5);
+    bSizer2->Add(bSizer8, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 
-    drawButton = new wxButton(this, wxID_ANY, wxString::FromUTF8("Rysuj"),
-                              wxDefaultPosition, wxDefaultSize, 0);
-    bSizer6->Add(drawButton, 0, wxALL, 5);
+    bSizer2->Add(0, 0, 1, wxEXPAND, 5);
 
-    bSizer6->Add(0, 0, 1, wxEXPAND, 5);
-
-    bSizer7->Add(bSizer6, 1, wxEXPAND | wxLEFT | wxRIGHT, 5);
-
-    m_staticText20 =
+    m_textStatusBar =
         new wxStaticText(this, wxID_ANY, wxString::FromUTF8("statusbar"),
                          wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText20->Wrap(-1);
-    m_staticText20->SetForegroundColour(
+    m_textStatusBar->Wrap(-1);
+    m_textStatusBar->SetForegroundColour(
         wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
-    m_staticText20->Enable(false);
+    m_textStatusBar->Enable(false);
 
-    bSizer7->Add(m_staticText20, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+    bSizer2->Add(m_textStatusBar, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
-    bSizer1->Add(bSizer7, 1, wxALIGN_CENTER_HORIZONTAL | wxEXPAND, 5);
+    bSizer1->Add(bSizer2, 1, wxEXPAND, 5);
 
     this->SetSizer(bSizer1);
     this->Layout();
@@ -199,124 +191,135 @@ MyFrame1::MyFrame1(wxWindow* parent, wxWindowID id, const wxString& title,
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(MyFrame1::changeSize));
     m_panel1->Connect(wxEVT_PAINT, wxPaintEventHandler(MyFrame1::drawOnPaint),
                       NULL, this);
-    axis->Connect(wxEVT_SCROLL_TOP,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    axis->Connect(wxEVT_SCROLL_BOTTOM,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    axis->Connect(wxEVT_SCROLL_LINEUP,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    axis->Connect(wxEVT_SCROLL_LINEDOWN,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    axis->Connect(wxEVT_SCROLL_PAGEUP,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    axis->Connect(wxEVT_SCROLL_PAGEDOWN,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    axis->Connect(wxEVT_SCROLL_THUMBTRACK,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    axis->Connect(wxEVT_SCROLL_THUMBRELEASE,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    axis->Connect(wxEVT_SCROLL_CHANGED,
-                  wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber), NULL,
-                  this);
-    rotate->Connect(wxEVT_SCROLL_TOP,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    rotate->Connect(wxEVT_SCROLL_BOTTOM,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    rotate->Connect(wxEVT_SCROLL_LINEUP,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    rotate->Connect(wxEVT_SCROLL_LINEDOWN,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    rotate->Connect(wxEVT_SCROLL_PAGEUP,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    rotate->Connect(wxEVT_SCROLL_PAGEDOWN,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    rotate->Connect(wxEVT_SCROLL_THUMBTRACK,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    rotate->Connect(wxEVT_SCROLL_THUMBRELEASE,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    rotate->Connect(wxEVT_SCROLL_CHANGED,
-                    wxScrollEventHandler(MyFrame1::scrollRotate), NULL, this);
-    translateXSlider->Connect(wxEVT_SCROLL_TOP,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateXSlider->Connect(wxEVT_SCROLL_BOTTOM,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateXSlider->Connect(wxEVT_SCROLL_LINEUP,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateXSlider->Connect(wxEVT_SCROLL_LINEDOWN,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateXSlider->Connect(wxEVT_SCROLL_PAGEUP,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateXSlider->Connect(wxEVT_SCROLL_PAGEDOWN,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateXSlider->Connect(wxEVT_SCROLL_THUMBTRACK,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateXSlider->Connect(wxEVT_SCROLL_THUMBRELEASE,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateXSlider->Connect(wxEVT_SCROLL_CHANGED,
-                              wxScrollEventHandler(MyFrame1::translateX), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_TOP,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_BOTTOM,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_LINEUP,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_LINEDOWN,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_PAGEUP,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_PAGEDOWN,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_THUMBTRACK,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_THUMBRELEASE,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    translateYSlider->Connect(wxEVT_SCROLL_CHANGED,
-                              wxScrollEventHandler(MyFrame1::translateY), NULL,
-                              this);
-    drawOnChangeCheckBox->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-                                  wxCommandEventHandler(MyFrame1::drawOnChange),
-                                  NULL, this);
-    drawAxisCheck->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-                           wxCommandEventHandler(MyFrame1::drawAxisChange),
-                           NULL, this);
-    interpolator->Connect(wxEVT_COMMAND_CHOICE_SELECTED,
-                          wxCommandEventHandler(MyFrame1::changeInterpolator),
+    m_sliderAxis->Connect(wxEVT_SCROLL_TOP,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
                           NULL, this);
-    loadImageButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                             wxCommandEventHandler(MyFrame1::loadImage), NULL,
-                             this);
-    saveSeriesButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                              wxCommandEventHandler(MyFrame1::clickSaveSeries),
-                              NULL, this);
-    saveButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                        wxCommandEventHandler(MyFrame1::clickSave), NULL, this);
-    drawButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                        wxCommandEventHandler(MyFrame1::clickDraw), NULL, this);
+    m_sliderAxis->Connect(wxEVT_SCROLL_BOTTOM,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                          NULL, this);
+    m_sliderAxis->Connect(wxEVT_SCROLL_LINEUP,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                          NULL, this);
+    m_sliderAxis->Connect(wxEVT_SCROLL_LINEDOWN,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                          NULL, this);
+    m_sliderAxis->Connect(wxEVT_SCROLL_PAGEUP,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                          NULL, this);
+    m_sliderAxis->Connect(wxEVT_SCROLL_PAGEDOWN,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                          NULL, this);
+    m_sliderAxis->Connect(wxEVT_SCROLL_THUMBTRACK,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                          NULL, this);
+    m_sliderAxis->Connect(wxEVT_SCROLL_THUMBRELEASE,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                          NULL, this);
+    m_sliderAxis->Connect(wxEVT_SCROLL_CHANGED,
+                          wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                          NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_TOP,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_BOTTOM,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_LINEUP,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_LINEDOWN,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_PAGEUP,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_PAGEDOWN,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_THUMBTRACK,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_THUMBRELEASE,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderAngle->Connect(wxEVT_SCROLL_CHANGED,
+                           wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                           NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_TOP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_BOTTOM,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_LINEUP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_LINEDOWN,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_PAGEUP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_PAGEDOWN,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_THUMBTRACK,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_THUMBRELEASE,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Connect(
+        wxEVT_SCROLL_CHANGED,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_TOP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_BOTTOM,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_LINEUP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_LINEDOWN,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_PAGEUP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_PAGEDOWN,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_THUMBTRACK,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_THUMBRELEASE,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Connect(
+        wxEVT_SCROLL_CHANGED,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_choiceInterpolator->Connect(
+        wxEVT_COMMAND_CHOICE_SELECTED,
+        wxCommandEventHandler(MyFrame1::choiceChangeInterpolator), NULL, this);
+    m_checkBoxAutoUpdate->Connect(
+        wxEVT_COMMAND_CHECKBOX_CLICKED,
+        wxCommandEventHandler(MyFrame1::choiceChangeAutoUpdate), NULL, this);
+    m_checkBoxDrawAxis->Connect(
+        wxEVT_COMMAND_CHECKBOX_CLICKED,
+        wxCommandEventHandler(MyFrame1::choiceChangeDrawAxis), NULL, this);
+    m_buttonLoadImage->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                               wxCommandEventHandler(MyFrame1::clickLoadImage),
+                               NULL, this);
+    m_buttonSaveSeries->Connect(
+        wxEVT_COMMAND_BUTTON_CLICKED,
+        wxCommandEventHandler(MyFrame1::clickSaveSeries), NULL, this);
+    m_buttonSave->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                          wxCommandEventHandler(MyFrame1::clickSave), NULL,
+                          this);
+    m_buttonDraw->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                          wxCommandEventHandler(MyFrame1::clickDraw), NULL,
+                          this);
 }
 
 MyFrame1::~MyFrame1() {
@@ -324,135 +327,135 @@ MyFrame1::~MyFrame1() {
     this->Disconnect(wxEVT_SIZE, wxSizeEventHandler(MyFrame1::changeSize));
     m_panel1->Disconnect(
         wxEVT_PAINT, wxPaintEventHandler(MyFrame1::drawOnPaint), NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_TOP,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_BOTTOM,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_LINEUP,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_LINEDOWN,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_PAGEUP,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_PAGEDOWN,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_THUMBTRACK,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_THUMBRELEASE,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    axis->Disconnect(wxEVT_SCROLL_CHANGED,
-                     wxScrollEventHandler(MyFrame1::scrollChangeAxisNumber),
-                     NULL, this);
-    rotate->Disconnect(wxEVT_SCROLL_TOP,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    rotate->Disconnect(wxEVT_SCROLL_BOTTOM,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    rotate->Disconnect(wxEVT_SCROLL_LINEUP,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    rotate->Disconnect(wxEVT_SCROLL_LINEDOWN,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    rotate->Disconnect(wxEVT_SCROLL_PAGEUP,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    rotate->Disconnect(wxEVT_SCROLL_PAGEDOWN,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    rotate->Disconnect(wxEVT_SCROLL_THUMBTRACK,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    rotate->Disconnect(wxEVT_SCROLL_THUMBRELEASE,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    rotate->Disconnect(wxEVT_SCROLL_CHANGED,
-                       wxScrollEventHandler(MyFrame1::scrollRotate), NULL,
-                       this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_TOP,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_BOTTOM,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_LINEUP,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_LINEDOWN,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_PAGEUP,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_PAGEDOWN,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_THUMBTRACK,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_THUMBRELEASE,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateXSlider->Disconnect(wxEVT_SCROLL_CHANGED,
-                                 wxScrollEventHandler(MyFrame1::translateX),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_TOP,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_BOTTOM,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_LINEUP,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_LINEDOWN,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_PAGEUP,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_PAGEDOWN,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_THUMBTRACK,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_THUMBRELEASE,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    translateYSlider->Disconnect(wxEVT_SCROLL_CHANGED,
-                                 wxScrollEventHandler(MyFrame1::translateY),
-                                 NULL, this);
-    drawOnChangeCheckBox->Disconnect(
-        wxEVT_COMMAND_CHECKBOX_CLICKED,
-        wxCommandEventHandler(MyFrame1::drawOnChange), NULL, this);
-    drawAxisCheck->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-                              wxCommandEventHandler(MyFrame1::drawAxisChange),
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_TOP,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_BOTTOM,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_LINEUP,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_LINEDOWN,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_PAGEUP,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_PAGEDOWN,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_THUMBTRACK,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_THUMBRELEASE,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAxis->Disconnect(wxEVT_SCROLL_CHANGED,
+                             wxScrollEventHandler(MyFrame1::scrollChangeAxis),
+                             NULL, this);
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_TOP,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
                               NULL, this);
-    interpolator->Disconnect(
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_BOTTOM,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                              NULL, this);
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_LINEUP,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                              NULL, this);
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_LINEDOWN,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                              NULL, this);
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_PAGEUP,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                              NULL, this);
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_PAGEDOWN,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                              NULL, this);
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_THUMBTRACK,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                              NULL, this);
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_THUMBRELEASE,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                              NULL, this);
+    m_sliderAngle->Disconnect(wxEVT_SCROLL_CHANGED,
+                              wxScrollEventHandler(MyFrame1::scrollChangeAngle),
+                              NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_TOP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_BOTTOM,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_LINEUP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_LINEDOWN,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_PAGEUP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_PAGEDOWN,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_THUMBTRACK,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_THUMBRELEASE,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateX->Disconnect(
+        wxEVT_SCROLL_CHANGED,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateX), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_TOP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_BOTTOM,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_LINEUP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_LINEDOWN,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_PAGEUP,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_PAGEDOWN,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_THUMBTRACK,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_THUMBRELEASE,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_sliderTranslateY->Disconnect(
+        wxEVT_SCROLL_CHANGED,
+        wxScrollEventHandler(MyFrame1::scrollChangeTranslateY), NULL, this);
+    m_choiceInterpolator->Disconnect(
         wxEVT_COMMAND_CHOICE_SELECTED,
-        wxCommandEventHandler(MyFrame1::changeInterpolator), NULL, this);
-    loadImageButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED,
-                                wxCommandEventHandler(MyFrame1::loadImage),
-                                NULL, this);
-    saveSeriesButton->Disconnect(
+        wxCommandEventHandler(MyFrame1::choiceChangeInterpolator), NULL, this);
+    m_checkBoxAutoUpdate->Disconnect(
+        wxEVT_COMMAND_CHECKBOX_CLICKED,
+        wxCommandEventHandler(MyFrame1::choiceChangeAutoUpdate), NULL, this);
+    m_checkBoxDrawAxis->Disconnect(
+        wxEVT_COMMAND_CHECKBOX_CLICKED,
+        wxCommandEventHandler(MyFrame1::choiceChangeDrawAxis), NULL, this);
+    m_buttonLoadImage->Disconnect(
+        wxEVT_COMMAND_BUTTON_CLICKED,
+        wxCommandEventHandler(MyFrame1::clickLoadImage), NULL, this);
+    m_buttonSaveSeries->Disconnect(
         wxEVT_COMMAND_BUTTON_CLICKED,
         wxCommandEventHandler(MyFrame1::clickSaveSeries), NULL, this);
-    saveButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED,
-                           wxCommandEventHandler(MyFrame1::clickSave), NULL,
-                           this);
-    drawButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED,
-                           wxCommandEventHandler(MyFrame1::clickDraw), NULL,
-                           this);
+    m_buttonSave->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED,
+                             wxCommandEventHandler(MyFrame1::clickSave), NULL,
+                             this);
+    m_buttonDraw->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED,
+                             wxCommandEventHandler(MyFrame1::clickDraw), NULL,
+                             this);
 }
 
 MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
@@ -460,132 +463,133 @@ MyDialog1::MyDialog1(wxWindow* parent, wxWindowID id, const wxString& title,
     : wxDialog(parent, id, title, pos, size, style) {
     this->SetSizeHints(wxSize(550, 400), wxSize(550, 400));
 
-    wxBoxSizer* bSizer10;
-    bSizer10 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* bSizer1;
+    bSizer1 = new wxBoxSizer(wxVERTICAL);
 
-    m_staticText14 =
+    m_staticTextAngle =
         new wxStaticText(this, wxID_ANY, wxString::FromUTF8("obrót:"),
                          wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText14->Wrap(-1);
-    bSizer10->Add(m_staticText14, 0, wxALL, 5);
+    m_staticTextAngle->Wrap(-1);
+    bSizer1->Add(m_staticTextAngle, 0, wxALL, 5);
 
-    wxBoxSizer* bSizer11;
-    bSizer11 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* bSizer2;
+    bSizer2 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText10 = new wxStaticText(this, wxID_ANY,
-                                      wxString::FromUTF8("początkowy kąt (°)"),
+    m_staticTextAngle1 = new wxStaticText(
+        this, wxID_ANY, wxString::FromUTF8("początkowy kąt (°)"),
+        wxDefaultPosition, wxDefaultSize, 0);
+    m_staticTextAngle1->Wrap(-1);
+    bSizer2->Add(m_staticTextAngle1, 0, wxALIGN_CENTER | wxALL, 5);
+
+    m_textCtrlAngle1 = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
                                       wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText10->Wrap(-1);
-    bSizer11->Add(m_staticText10, 0, wxALIGN_CENTER | wxALL, 5);
+    bSizer2->Add(m_textCtrlAngle1, 0, wxALIGN_CENTER | wxALL, 5);
 
-    fi1Box = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                            wxDefaultSize, 0);
-    bSizer11->Add(fi1Box, 0, wxALIGN_CENTER | wxALL, 5);
-
-    m_staticText11 =
+    m_staticTextAngle2 =
         new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowy kąt (°)"),
                          wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText11->Wrap(-1);
-    bSizer11->Add(m_staticText11, 0, wxALIGN_CENTER | wxALL, 5);
+    m_staticTextAngle2->Wrap(-1);
+    bSizer2->Add(m_staticTextAngle2, 0, wxALIGN_CENTER | wxALL, 5);
 
-    fi2Box = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                            wxDefaultSize, 0);
-    bSizer11->Add(fi2Box, 0, wxALIGN_CENTER | wxALL, 5);
+    m_textCtrlAngle2 = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
+                                      wxDefaultPosition, wxDefaultSize, 0);
+    bSizer2->Add(m_textCtrlAngle2, 0, wxALIGN_CENTER | wxALL, 5);
 
-    bSizer10->Add(bSizer11, 1, wxEXPAND, 5);
+    bSizer1->Add(bSizer2, 1, wxEXPAND, 5);
 
     m_staticline1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition,
                                      wxDefaultSize, wxLI_HORIZONTAL);
-    bSizer10->Add(m_staticline1, 0, wxEXPAND | wxALL, 5);
+    bSizer1->Add(m_staticline1, 0, wxEXPAND | wxALL, 5);
 
-    m_staticText16 = new wxStaticText(
+    m_staticTextTranslateX = new wxStaticText(
         this, wxID_ANY, wxString::FromUTF8("przesunięcie w poziomie:"),
         wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText16->Wrap(-1);
-    bSizer10->Add(m_staticText16, 0, wxALL, 5);
+    m_staticTextTranslateX->Wrap(-1);
+    bSizer1->Add(m_staticTextTranslateX, 0, wxALL, 5);
 
-    wxBoxSizer* bSizer13;
-    bSizer13 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* bSizer3;
+    bSizer3 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText12 = new wxStaticText(this, wxID_ANY,
-                                      wxString::FromUTF8("początkowe dx (%)"),
-                                      wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText12->Wrap(-1);
-    bSizer13->Add(m_staticText12, 0, wxALIGN_CENTER | wxALL, 5);
+    m_staticTextTranslateX1 = new wxStaticText(
+        this, wxID_ANY, wxString::FromUTF8("początkowe dx (%)"),
+        wxDefaultPosition, wxDefaultSize, 0);
+    m_staticTextTranslateX1->Wrap(-1);
+    bSizer3->Add(m_staticTextTranslateX1, 0, wxALIGN_CENTER | wxALL, 5);
 
-    dx1Box = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                            wxDefaultSize, 0);
-    bSizer13->Add(dx1Box, 0, wxALIGN_CENTER | wxALL, 5);
+    m_textCtrlTranslateX1 = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
+                                           wxDefaultPosition, wxDefaultSize, 0);
+    bSizer3->Add(m_textCtrlTranslateX1, 0, wxALIGN_CENTER | wxALL, 5);
 
-    m_staticText13 =
+    m_staticTextTranslateX2 =
         new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowe dx (%)"),
                          wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText13->Wrap(-1);
-    bSizer13->Add(m_staticText13, 0, wxALIGN_CENTER | wxALL, 5);
+    m_staticTextTranslateX2->Wrap(-1);
+    bSizer3->Add(m_staticTextTranslateX2, 0, wxALIGN_CENTER | wxALL, 5);
 
-    dx2Box = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                            wxDefaultSize, 0);
-    bSizer13->Add(dx2Box, 0, wxALIGN_CENTER | wxALL, 5);
+    m_textCtrlTranslateX2 = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
+                                           wxDefaultPosition, wxDefaultSize, 0);
+    bSizer3->Add(m_textCtrlTranslateX2, 0, wxALIGN_CENTER | wxALL, 5);
 
-    bSizer10->Add(bSizer13, 1, wxEXPAND, 5);
+    bSizer1->Add(bSizer3, 1, wxEXPAND, 5);
 
     m_staticline2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition,
                                      wxDefaultSize, wxLI_HORIZONTAL);
-    bSizer10->Add(m_staticline2, 0, wxEXPAND | wxALL, 5);
+    bSizer1->Add(m_staticline2, 0, wxEXPAND | wxALL, 5);
 
-    m_staticText17 = new wxStaticText(
+    m_staticTextTranslateY = new wxStaticText(
         this, wxID_ANY, wxString::FromUTF8("przesunięcie w pionie"),
         wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText17->Wrap(-1);
-    bSizer10->Add(m_staticText17, 0, wxALL, 5);
+    m_staticTextTranslateY->Wrap(-1);
+    bSizer1->Add(m_staticTextTranslateY, 0, wxALL, 5);
 
-    wxBoxSizer* bSizer14;
-    bSizer14 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* bSizer4;
+    bSizer4 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_staticText18 = new wxStaticText(this, wxID_ANY,
-                                      wxString::FromUTF8("początkowe dy (%)"),
-                                      wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText18->Wrap(-1);
-    bSizer14->Add(m_staticText18, 0, wxALIGN_CENTER | wxALL, 5);
+    m_staticTextTranslateY1 = new wxStaticText(
+        this, wxID_ANY, wxString::FromUTF8("początkowe dy (%)"),
+        wxDefaultPosition, wxDefaultSize, 0);
+    m_staticTextTranslateY1->Wrap(-1);
+    bSizer4->Add(m_staticTextTranslateY1, 0, wxALIGN_CENTER | wxALL, 5);
 
-    dy1Box = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                            wxDefaultSize, 0);
-    bSizer14->Add(dy1Box, 0, wxALIGN_CENTER | wxALL, 5);
+    m_textCtrlTranslateY1 = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
+                                           wxDefaultPosition, wxDefaultSize, 0);
+    bSizer4->Add(m_textCtrlTranslateY1, 0, wxALIGN_CENTER | wxALL, 5);
 
-    m_staticText19 =
+    m_staticTextTranslateY2 =
         new wxStaticText(this, wxID_ANY, wxString::FromUTF8("końcowe dy (%)"),
                          wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText19->Wrap(-1);
-    bSizer14->Add(m_staticText19, 0, wxALIGN_CENTER | wxALL, 5);
+    m_staticTextTranslateY2->Wrap(-1);
+    bSizer4->Add(m_staticTextTranslateY2, 0, wxALIGN_CENTER | wxALL, 5);
 
-    dy2Box = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                            wxDefaultSize, 0);
-    bSizer14->Add(dy2Box, 0, wxALIGN_CENTER | wxALL, 5);
+    m_textCtrlTranslateY2 = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
+                                           wxDefaultPosition, wxDefaultSize, 0);
+    bSizer4->Add(m_textCtrlTranslateY2, 0, wxALIGN_CENTER | wxALL, 5);
 
-    bSizer10->Add(bSizer14, 1, wxEXPAND, 5);
+    bSizer1->Add(bSizer4, 1, wxEXPAND, 5);
 
     m_staticline3 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition,
                                      wxDefaultSize, wxLI_HORIZONTAL);
-    bSizer10->Add(m_staticline3, 0, wxEXPAND | wxALL, 5);
+    bSizer1->Add(m_staticline3, 0, wxEXPAND | wxALL, 5);
 
-    generateButton = new wxButton(this, wxID_ANY, wxString::FromUTF8("Generuj"),
-                                  wxDefaultPosition, wxDefaultSize, 0);
-    bSizer10->Add(generateButton, 0, wxALIGN_RIGHT | wxALL, 5);
+    m_buttonGenerate =
+        new wxButton(this, wxID_ANY, wxString::FromUTF8("Generuj"),
+                     wxDefaultPosition, wxDefaultSize, 0);
+    bSizer1->Add(m_buttonGenerate, 0, wxALIGN_RIGHT | wxALL, 5);
 
-    this->SetSizer(bSizer10);
+    this->SetSizer(bSizer1);
     this->Layout();
 
     this->Centre(wxBOTH);
 
     // Connect Events
-    generateButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                            wxCommandEventHandler(MyDialog1::generate), NULL,
-                            this);
+    m_buttonGenerate->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                              wxCommandEventHandler(MyDialog1::clickGenerate),
+                              NULL, this);
 }
 
 MyDialog1::~MyDialog1() {
     // Disconnect Events
-    generateButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED,
-                               wxCommandEventHandler(MyDialog1::generate), NULL,
-                               this);
+    m_buttonGenerate->Disconnect(
+        wxEVT_COMMAND_BUTTON_CLICKED,
+        wxCommandEventHandler(MyDialog1::clickGenerate), NULL, this);
 }

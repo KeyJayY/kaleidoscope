@@ -2,22 +2,22 @@
 
 GUIMyDialog1::GUIMyDialog1(wxWindow* parent) : MyDialog1(parent) {}
 
-void GUIMyDialog1::generate(wxCommandEvent& event) {
+void GUIMyDialog1::clickGenerate(wxCommandEvent& event) {
     if (checkConfig()) {
         isOk = true;
         Close();
     } else
-        wxMessageBox("Niepoprawne dane", "niepoprawne dane",
+        wxMessageBox("Niepoprawne dane.", "Niepoprawne dane",
                      wxOK | wxICON_ERROR);
 }
 
 bool GUIMyDialog1::checkConfig() {
-    if (!(dx1Box->GetValue().ToDouble(&(config.dx1)) &&
-          dx2Box->GetValue().ToDouble(&(config.dx2)) &&
-          dy1Box->GetValue().ToDouble(&(config.dy1)) &&
-          dy1Box->GetValue().ToDouble(&(config.dy1)) &&
-          fi1Box->GetValue().ToDouble(&(config.phi1)) &&
-          fi2Box->GetValue().ToDouble(&(config.phi2))))
+    if (!(m_textCtrlTranslateX1->GetValue().ToDouble(&(config.dx1)) &&
+          m_textCtrlTranslateX2->GetValue().ToDouble(&(config.dx2)) &&
+          m_textCtrlTranslateY1->GetValue().ToDouble(&(config.dy1)) &&
+          m_textCtrlTranslateY1->GetValue().ToDouble(&(config.dy1)) &&
+          m_textCtrlAngle1->GetValue().ToDouble(&(config.phi1)) &&
+          m_textCtrlAngle2->GetValue().ToDouble(&(config.phi2))))
         return false;
     if (config.dx1 < -100 || config.dx1 > 100) return false;
     if (config.dx2 < -100 || config.dx2 > 100) return false;

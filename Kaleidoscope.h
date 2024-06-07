@@ -18,14 +18,16 @@ struct Kaleidoscope {
         GENERATE,  // rotation and axis
         BITMAP,
         FULL
-    } cache_state;
+    } cache_state = NO_IMAGE;
     int side = 500;
     /// -1..1
     double translate_x = 0;
     /// -1..1
     double translate_y = 0;
     bool draw_axis = true;
+    /// number of axis
     int axis = 0;
+    /// degrees
     double angle = 0;
     InterpolationMethod interpolation = LINEAR;
     wxImage original_image;
@@ -53,6 +55,7 @@ struct Kaleidoscope {
     void setImage(const wxImage img);
 
     bool isImageLoaded();
+    const wxImage& getOriginalImage();
     const wxImage& getImage();
     const wxBitmap& getBitmap();
     double getLastUpdateMillis();

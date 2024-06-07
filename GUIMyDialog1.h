@@ -19,7 +19,7 @@ struct Config {
 class GUIMyDialog1 : public MyDialog1 {
    protected:
     // Handlers for MyDialog1 events.
-    void generate(wxCommandEvent& event);
+    void clickGenerate(wxCommandEvent& event);
 
    public:
     /** Constructor */

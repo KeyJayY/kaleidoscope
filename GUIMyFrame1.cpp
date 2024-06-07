@@ -2,11 +2,29 @@
 
 GUIMyFrame1::GUIMyFrame1(wxWindow* parent) : MyFrame1(parent) {
     wxInitAllImageHandlers();
-    Bind(wxEVT_COMMAND_BUTTON_CLICKED, &GUIMyFrame1::OnThreadCompletion, this,
-         windowId);
-    Bind(wxEVT_COMMAND_BUTTON_CLICKED, &GUIMyFrame1::UpdateProgressBar, this,
-         ID_UPDATE_PROGRESS);
-    resizeTimer.Bind(wxEVT_TIMER, &GUIMyFrame1::onResizeTimer, this);
+    Bind(
+        wxEVT_COMMAND_BUTTON_CLICKED,
+        [&](wxCommandEvent& event) {
+            if (dlg != nullptr) {
+                dlg->EndModal(wxID_OK);
+                dlg->Destroy();
+                dlg = nullptr;
+            }
+        },
+        ID_WINDOW);
+    Bind(
+        wxEVT_COMMAND_BUTTON_CLICKED,
+        [&](wxCommandEvent& event) {
+            int progress = event.GetInt();
+            if (dlg && dlg->progressBar) {
+                dlg->progressBar->SetValue(progress);
+            }
+        },
+        ID_UPDATE_PROGRESS);
+    resizeTimer.Bind(wxEVT_TIMER, [&](wxTimerEvent& event) {
+        gen.setSide(m_panel1->GetSize().x);
+        Refresh();
+    });
     this->SetDoubleBuffered(true);
 }
 
@@ -16,51 +34,55 @@ void GUIMyFrame1::changeSize(wxSizeEvent& event) {
 }
 
 void GUIMyFrame1::drawOnPaint(wxPaintEvent& event) {
+    if (!gen.isImageLoaded()) return;
     wxPaintDC dc(m_panel1);
     dc.DrawBitmap(gen.getBitmap(), 0, 0, true);
+    auto millis = gen.getLastUpdateMillis();
+    auto timeText = std::format("{:.3} ms / {:.1f} FPS", millis, 1000 / millis);
+    m_textStatusBar->SetLabelText(timeText);
 }
 
-void GUIMyFrame1::scrollChangeAxisNumber(wxScrollEvent& event) {
-    axisNumberText->SetLabel(std::to_string(axis->GetValue()));
-    gen.setAxis(axis->GetValue());
-    if (auto_update) Repaint();
+void GUIMyFrame1::scrollChangeAxis(wxScrollEvent& event) {
+    m_textAxis->SetLabel(std::to_string(m_sliderAxis->GetValue()));
+    gen.setAxis(m_sliderAxis->GetValue());
+    if (auto_update) Refresh();
 }
 
-void GUIMyFrame1::scrollRotate(wxScrollEvent& event) {
-    rotateText->SetLabel(std::to_string(rotate->GetValue()));
-    gen.setAngle(rotate->GetValue());
-    if (auto_update) Repaint();
+void GUIMyFrame1::scrollChangeAngle(wxScrollEvent& event) {
+    m_textAngle->SetLabel(std::to_string(m_sliderAngle->GetValue()));
+    gen.setAngle(m_sliderAngle->GetValue());
+    if (auto_update) Refresh();
 }
 
-void GUIMyFrame1::translateX(wxScrollEvent& event) {
-    translationXText->SetLabel(std::to_string(translateXSlider->GetValue()));
-    gen.setTranslateX(translateXSlider->GetValue() / 100.0);
-    if (auto_update) Repaint();
+void GUIMyFrame1::scrollChangeTranslateX(wxScrollEvent& event) {
+    m_textTranslateX->SetLabel(std::to_string(m_sliderTranslateX->GetValue()));
+    gen.setTranslateX(m_sliderTranslateX->GetValue() / 100.0);
+    if (auto_update) Refresh();
 }
 
-void GUIMyFrame1::translateY(wxScrollEvent& event) {
-    translationYText->SetLabel(std::to_string(translateYSlider->GetValue()));
-    gen.setTranslateY(translateYSlider->GetValue() / 100.0);
-    if (auto_update) Repaint();
+void GUIMyFrame1::scrollChangeTranslateY(wxScrollEvent& event) {
+    m_textTranslateY->SetLabel(std::to_string(m_sliderTranslateY->GetValue()));
+    gen.setTranslateY(m_sliderTranslateY->GetValue() / 100.0);
+    if (auto_update) Refresh();
 }
 
-void GUIMyFrame1::drawOnChange(wxCommandEvent& event) {
-    auto_update = drawOnChangeCheckBox->GetValue();
-    if (auto_update) Repaint();
+void GUIMyFrame1::choiceChangeInterpolator(wxCommandEvent& event) {
+    gen.setInterpolation(Kaleidoscope::InterpolationMethod(
+        m_choiceInterpolator->GetSelection()));
+    if (auto_update) Refresh();
 }
 
-void GUIMyFrame1::drawAxisChange(wxCommandEvent& event) {
-    gen.setDrawAxis(drawAxisCheck->GetValue());
-    if (auto_update) Repaint();
+void GUIMyFrame1::choiceChangeAutoUpdate(wxCommandEvent& event) {
+    auto_update = m_checkBoxAutoUpdate->GetValue();
+    if (auto_update) Refresh();
 }
 
-void GUIMyFrame1::changeInterpolator(wxCommandEvent& event) {
-    gen.setInterpolation(
-        Kaleidoscope::InterpolationMethod(interpolator->GetSelection()));
-    if (auto_update) Repaint();
+void GUIMyFrame1::choiceChangeDrawAxis(wxCommandEvent& event) {
+    gen.setDrawAxis(m_checkBoxDrawAxis->GetValue());
+    if (auto_update) Refresh();
 }
 
-void GUIMyFrame1::loadImage(wxCommandEvent& event) {
+void GUIMyFrame1::clickLoadImage(wxCommandEvent& event) {
     wxFileDialog openFileDialog(
         this, _("Wybierz obraz"), "", "",
         "Wszystkie pliki obrazów (*.bmp;*.jpg;*.png)|*.bmp;*.jpg;*.png",
@@ -70,7 +92,7 @@ void GUIMyFrame1::loadImage(wxCommandEvent& event) {
     resetOptions();
     wxString imagePath = openFileDialog.GetPath();
     gen.setImage(wxImage(imagePath));
-    Repaint();
+    Refresh();
 }
 
 void GUIMyFrame1::clickSaveSeries(wxCommandEvent& event) {
@@ -120,23 +142,37 @@ void GUIMyFrame1::clickSave(wxCommandEvent& event) {
     }
 }
 
-void GUIMyFrame1::clickDraw(wxCommandEvent& event) { Repaint(); }
+void GUIMyFrame1::clickDraw(wxCommandEvent& event) { Refresh(); }
 
-void GUIMyFrame1::UpdateProgressBar(wxCommandEvent& event) {
-    int progress = event.GetInt();
-    if (dlg && dlg->progressBar) {
-        dlg->progressBar->SetValue(progress);
-    }
+void GUIMyFrame1::resetOptions() {
+    gen.resetParameters();
+    m_sliderAxis->SetValue(0);
+    m_sliderAngle->SetValue(0);
+    m_sliderTranslateX->SetValue(0);
+    m_sliderTranslateY->SetValue(0);
+    m_textAxis->SetLabel("0");
+    m_textAngle->SetLabel("0");
+    m_textTranslateX->SetLabel("0");
+    m_textTranslateY->SetLabel("0");
+}
+
+bool GUIMyFrame1::ensureImageLoaded() {
+    if (gen.isImageLoaded()) return false;
+    wxMessageBox("Nie wczytano obrazu.", "Nie wczytano obrazu",
+                 wxOK | wxICON_ERROR);
+    return true;
 }
 
 void GUIMyFrame1::generateSeries(wxString path, Config config) {
     constexpr size_t n = 61;
+    auto img = gen.getOriginalImage();
     Kaleidoscope gen;
     // TODO: add to dialog width of images: gen.setSide(...);
     // TODO: add to dialog interpolator and drawAxis
-    gen.setInterpolation(
-        Kaleidoscope::InterpolationMethod(interpolator->GetSelection()));
-    gen.setDrawAxis(drawAxisCheck->GetValue());
+    gen.setImage(img);
+    gen.setInterpolation(Kaleidoscope::InterpolationMethod(
+        m_choiceInterpolator->GetSelection()));
+    gen.setDrawAxis(m_checkBoxDrawAxis->GetValue());
     double dx = std::abs(config.dx2 - config.dx1) / (n - 1);
     double dy = std::abs(config.dy2 - config.dy1) / (n - 1);
     double dphi = std::abs(config.phi2 - config.phi1) / (n - 1);
@@ -156,44 +192,4 @@ void GUIMyFrame1::generateSeries(wxString path, Config config) {
         eventUpdate.SetInt((i + 1) * 100 / n);
         wxQueueEvent(this, eventUpdate.Clone());
     }
-}
-
-void GUIMyFrame1::OnThreadCompletion(wxCommandEvent& event) {
-    if (dlg) {
-        dlg->EndModal(wxID_OK);
-        dlg->Destroy();
-        dlg = nullptr;
-    }
-}
-
-void GUIMyFrame1::resetOptions() {
-    gen.resetParameters();
-    axis->SetValue(0);
-    rotate->SetValue(0);
-    translateXSlider->SetValue(0);
-    translateYSlider->SetValue(0);
-    axisNumberText->SetLabel("0");
-    rotateText->SetLabel("0");
-    translationXText->SetLabel("0");
-    translationYText->SetLabel("0");
-}
-
-void GUIMyFrame1::onResizeTimer(wxTimerEvent& event) {
-    gen.setSide(m_panel1->GetSize().x);
-    Repaint();
-}
-
-bool GUIMyFrame1::ensureImageLoaded() {
-    if (gen.isImageLoaded()) return false;
-    wxMessageBox("Nie wczytano obrazu", "Nie wczytano obrazu",
-                 wxOK | wxICON_ERROR);
-    return true;
-}
-
-void GUIMyFrame1::Repaint() {
-    if (!gen.isImageLoaded()) return;
-    auto millis = gen.getLastUpdateMillis();
-    auto timeText = std::format("{:.3} ms / {:.1f} FPS", millis, 1000 / millis);
-    m_staticText20->SetLabelText(timeText);
-    Refresh();
 }
