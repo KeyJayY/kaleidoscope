@@ -170,7 +170,10 @@ void Kaleidoscope::syncGenerate() {
 }
 
 void Kaleidoscope::syncAxis() {
-    wxMemoryDC dc(generated_bitmap);
+    wxBitmap bitmap(side, side);
+    wxMemoryDC dc;
+    dc.SelectObject(bitmap);
+    dc.DrawBitmap(generated_image, 0, 0, false);
     dc.SetPen(*wxBLACK_PEN);
     for (auto phi : AxisIterator(axis)) {
         phi = -phi - angle;
@@ -179,8 +182,11 @@ void Kaleidoscope::syncAxis() {
                     cos(wxDegToRad(phi - 90)) * side + side / 2.0,
                     sin(wxDegToRad(phi - 90)) * side + side / 2.0);
     }
-    generated_image = generated_bitmap.ConvertToImage();
+    generated_image = bitmap.ConvertToImage();
+    generated_bitmap = wxBitmap(generated_image);
 }
+
+
 
 void Kaleidoscope::setCacheState(Kaleidoscope::CacheState state) {
     if (state < cache_state) cache_state = state;

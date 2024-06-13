@@ -45,7 +45,11 @@ void GUIMyFrame1::drawOnPaint(wxPaintEvent& event) {
 void GUIMyFrame1::Paint() {
     if (!gen.isImageLoaded()) return;
     wxClientDC dc(m_panel1);
-    dc.DrawBitmap(gen.getBitmap(), 0, 0, true);
+    dc.SetBrush(*wxBLACK_BRUSH);
+    dc.DrawBitmap(wxBitmap(gen.getImage()), 0, 0, true);
+    auto millis = gen.getLastUpdateMillis();
+    auto timeText = std::format("{:.3} ms / {:.1f} FPS", millis, 1000 / millis);
+    m_textStatusBar->SetLabelText(timeText);
 }
 
 void GUIMyFrame1::Repaint() {
