@@ -79,7 +79,8 @@ class MyFrame1 : public wxFrame {
 
    public:
     MyFrame1(wxWindow* parent, wxWindowID id = wxID_ANY,
-             const wxString& title = wxT("KeyJayY/kaleidoscope 2024"),
+             const wxString& title =
+                 wxString::FromUTF8("GFK 30/kaleidoscope 2D 2024"),
              const wxPoint& pos = wxDefaultPosition,
              const wxSize& size = wxSize(1050, 550),
              long style = wxDEFAULT_FRAME_STYLE | wxBORDER_NONE |
@@ -119,8 +120,8 @@ class MyDialog1 : public wxDialog {
 
    public:
     MyDialog1(wxWindow* parent, wxWindowID id = wxID_ANY,
-              const wxString& title =
-                  wxT("KeyJayY/kaleidoscope 2024 - Wygeneruj ciąg"),
+              const wxString& title = wxString::FromUTF8(
+                  "GFK 30/kaleidoscope 2D 2024 - wygeneruj ciąg"),
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxSize(550, 400),
               long style = wxDEFAULT_DIALOG_STYLE);

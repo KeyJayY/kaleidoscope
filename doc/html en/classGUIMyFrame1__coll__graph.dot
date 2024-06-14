@@ -1,0 +1,11 @@
+digraph "GUIMyFrame1"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="GUIMyFrame1",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Main frame class that extends MyFrame1, handling UI interactions and drawing."];
+  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="MyFrame1",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classMyFrame1.html",tooltip="The main frame class for the application GUI."];
+  Node3 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="wxFrame",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+}

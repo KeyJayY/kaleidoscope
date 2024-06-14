@@ -1,0 +1,12 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node9 [label="wxDialog",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node9 -> Node0 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node0 [label="LoadingDialog",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classLoadingDialog.html",tooltip="Custom dialog class that shows a progress bar."];
+  Node9 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="MyDialog1",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classMyDialog1.html",tooltip="Dialog class for generating sequences."];
+}
