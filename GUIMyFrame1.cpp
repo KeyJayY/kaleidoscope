@@ -155,7 +155,10 @@ void GUIMyFrame1::clickSave(wxCommandEvent& event) {
     }
 
     if (!gen.getImage().SaveFile(filePath, fileType)) {
-        wxLogError("Nie można zapisać obrazu!");
+        wxMessageBox(
+            wxString::FromUTF8(
+                "Nieznane rozszerzenie albo brak uprawnień do zapisu?"),
+            wxString::FromUTF8("Nie można zapisać obrazu!"));
     }
 }
 
